@@ -6,8 +6,7 @@ async function addUser(userData) {
         
         // التحقق من وجود التوكن
         if (!adminToken) {
-            // في حالة عدم وجود توكن، استخدم البيانات التجريبية
-            return addDemoUser(userData);
+            throw new Error('لم يتم العثور على توكن المصادقة. يجب تسجيل الدخول أولاً.');
         }
 
         // إعداد headers للطلب
@@ -55,6 +54,46 @@ async function addUser(userData) {
     }
 }
 
+// دالة لجلب بيانات مستخدم مفرد
+async function fetchUserById(userId) {
+    try {
+        const adminToken = localStorage.getItem('admin_token') || localStorage.getItem('token') || localStorage.getItem('auth_token');
+
+        if (!adminToken) {
+            throw new Error('لم يتم العثور على توكن المصادقة. يجب تسجيل الدخول أولاً.');
+        }
+
+        const headers = {
+            'Authorization': `Bearer ${adminToken}`,
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+        };
+
+        const response = await fetch(`http://192.168.1.8:8000/api/users/${userId}`, {
+            method: 'GET',
+            headers: headers
+        });
+
+        if (!response.ok) {
+            throw new Error(`خطأ في استجابة الخادم: HTTP ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        return {
+            status: true,
+            user: data.user || data
+        };
+
+    } catch (error) {
+        console.error('خطأ في جلب بيانات المستخدم:', error);
+        return {
+            status: false,
+            message: error.message
+        };
+    }
+}
+
 // دالة لتحديث بيانات المستخدم
 async function updateUser(userId, userData) {
     try {
@@ -63,9 +102,7 @@ async function updateUser(userId, userData) {
         
         // التحقق من وجود التوكن
         if (!adminToken) {
-            // في بيئة التطوير، استخدم البيانات التجريبية
-            console.warn('لا يوجد توكن مصادقة، سيتم تحديث البيانات التجريبية محلياً');
-            return updateDemoUser(userId, userData);
+            throw new Error('لم يتم العثور على توكن المصادقة. يجب تسجيل الدخول أولاً.');
         }
 
         // إعداد headers للطلب
@@ -123,8 +160,7 @@ async function deleteUser(userId) {
         
         // التحقق من وجود التوكن
         if (!adminToken) {
-            // في حالة عدم وجود توكن، استخدم البيانات التجريبية
-            return deleteDemoUser(userId);
+            throw new Error('لم يتم العثور على توكن المصادقة. يجب تسجيل الدخول أولاً.');
         }
 
         // إعداد headers للطلب
@@ -178,61 +214,7 @@ async function fetchPendingRegistrations() {
         
         // التحقق من وجود التوكن
         if (!adminToken) {
-            // في حالة عدم وجود توكن، استخدم البيانات التجريبية
-            return {
-                status: true,
-                requests: [
-                    {
-                        id: 'req_001',
-                        name: 'أحمد محمد علي',
-                        email: 'ahmed.mohamed@example.com',
-                        phone: '01234567890',
-                        user_type: 'driver',
-                        registration_date: '2024-01-15',
-                        status: 'pending',
-                        details: {
-                            governorate: 'القاهرة',
-                            license_front: 'license_front_001.jpg',
-                            license_back: 'license_back_001.jpg',
-                            national_id_front: 'id_front_001.jpg',
-                            national_id_back: 'id_back_001.jpg'
-                        }
-                    },
-                    {
-                        id: 'req_002',
-                        name: 'مطعم الأصالة',
-                        email: 'asala@restaurant.com',
-                        phone: '01987654321',
-                        user_type: 'restaurant',
-                        registration_date: '2024-01-14',
-                        status: 'pending',
-                        details: {
-                            restaurant_name: 'مطعم الأصالة',
-                            governorate: 'الجيزة',
-                            logo_image: 'asala_logo.jpg',
-                            commercial_register_front: 'cr_front_002.jpg',
-                            commercial_register_back: 'cr_back_002.jpg',
-                            cuisine_types: ['شرقي', 'مشويات']
-                        }
-                    },
-                    {
-                        id: 'req_003',
-                        name: 'مكتب النيل للتوصيل',
-                        email: 'nile.office@example.com',
-                        phone: '01555666777',
-                        user_type: 'car_rental_office',
-                        registration_date: '2024-01-13',
-                        status: 'pending',
-                        details: {
-                            office_name: 'مكتب النيل للتوصيل',
-                            governorate: 'الإسكندرية',
-                            logo_image: 'nile_logo.jpg',
-                            commercial_register_front: 'cr_front_003.jpg',
-                            commercial_register_back: 'cr_back_003.jpg'
-                        }
-                    }
-                ]
-            };
+            throw new Error('لم يتم العثور على توكن المصادقة. يجب تسجيل الدخول أولاً.');
         }
 
         // إعداد headers للطلب
@@ -425,6 +407,7 @@ async function updateUserStatus(userId, isApproved) {
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = {
         fetchUsers,
+        fetchUserById,
         addUser,
         updateUser,
         deleteUser,
@@ -644,15 +627,10 @@ async function fetchUsers() {
     try {
         // الحصول على التوكن من localStorage
         const adminToken = localStorage.getItem('admin_token') || localStorage.getItem('token') || localStorage.getItem('auth_token');
-        
-        // طباعة التوكن المحفوظ في الكونسول
-        console.log('التوكن المحفوظ في localStorage:', adminToken);
-        
+
         // التحقق من وجود التوكن
         if (!adminToken) {
-            // في بيئة التطوير، استخدم توكن مؤقت
-            console.warn('لا يوجد توكن مصادقة، سيتم استخدام بيانات تجريبية');
-            return getDemoUsers();
+            throw new Error('لم يتم العثور على توكن المصادقة. يجب تسجيل الدخول أولاً.');
         }
 
         // إعداد headers للطلب

@@ -29,39 +29,7 @@ async function loadUsers() {
     applyFilter();
   } catch (error) {
     console.error("Error loading users:", error);
-    // Use dummy data for development
-    users = [
-      {
-        id: 1,
-        name: "أحمد محمد",
-        email: "ahmed@example.com",
-        phone: "01234567890",
-        userType: "admin",
-        status: "active",
-        profileImage: null,
-        createdAt: "2024-01-15",
-      },
-      {
-        id: 2,
-        name: "فاطمة علي",
-        email: "fatima@example.com",
-        phone: "01987654321",
-        userType: "user",
-        status: "active",
-        profileImage: null,
-        createdAt: "2024-01-20",
-      },
-      {
-        id: 3,
-        name: "محمد حسن",
-        email: "mohamed@example.com",
-        phone: "01122334455",
-        userType: "moderator",
-        status: "inactive",
-        profileImage: null,
-        createdAt: "2024-01-25",
-      },
-    ];
+    users = [];
     applyFilter();
   }
 }
@@ -69,7 +37,8 @@ async function loadUsers() {
 // Load pending registration requests
 async function loadPendingRequests() {
   try {
-    const requests = await fetchPendingRegistrations();
+    const result = await fetchPendingRegistrations();
+    const requests = result.requests || [];
     console.log("Loaded pending requests:", requests);
   } catch (error) {
     console.error("Error loading pending requests:", error);
@@ -165,7 +134,8 @@ function showAddUserModal() {
 // Show pending registration requests
 async function showPendingRequests() {
   try {
-    const requests = await fetchPendingRegistrations();
+    const result = await fetchPendingRegistrations();
+    const requests = result.requests || [];
     const tbody = document.getElementById("pendingRequestsTableBody");
 
     if (!tbody) {
@@ -185,8 +155,8 @@ async function showPendingRequests() {
                     <td>${request.name}</td>
                     <td>${request.email}</td>
                     <td>${request.phone}</td>
-                    <td><span class="badge badge-${getBadgeClass(request.userType)}">${getUserTypeText(request.userType)}</span></td>
-                    <td>${formatDate(request.requestDate)}</td>
+                    <td><span class="badge badge-${getBadgeClass(request.user_type)}">${getUserTypeText(request.user_type)}</span></td>
+                    <td>${formatDate(request.registration_date)}</td>
                     <td>
                         <button class="btn btn-info btn-sm" onclick="viewRequestDetails('${request.id}')">
                             <i class="fas fa-eye"></i> عرض التفاصيل
@@ -213,8 +183,8 @@ async function showPendingRequests() {
 // View request details
 async function viewRequestDetails(requestId) {
   try {
-    const requests = await fetchPendingRegistrations();
-    const request = requests.find((r) => r.id === requestId);
+    const result = await fetchPendingRegistrations();
+    const request = (result.requests || []).find((r) => r.id === requestId);
 
     if (!request) {
       alert("لم يتم العثور على الطلب");
@@ -236,8 +206,8 @@ async function viewRequestDetails(requestId) {
             ${createDetailRow("الاسم الكامل", request.name)}
             ${createDetailRow("البريد الإلكتروني", request.email)}
             ${createDetailRow("رقم الهاتف", request.phone)}
-            ${createDetailRow("نوع المستخدم", getUserTypeText(request.userType))}
-            ${createDetailRow("تاريخ الطلب", formatDate(request.requestDate))}
+            ${createDetailRow("نوع المستخدم", getUserTypeText(request.user_type))}
+            ${createDetailRow("تاريخ الطلب", formatDate(request.registration_date))}
         `;
 
     // User type specific information
@@ -246,19 +216,19 @@ async function viewRequestDetails(requestId) {
     );
     let specificInfo = "";
 
-    if (request.userType === "driver") {
+    if (request.user_type === "driver") {
       specificInfo = `
                 ${createDetailRow("رقم الرخصة", request.licenseNumber || "غير محدد")}
                 ${createDetailRow("نوع المركبة", request.vehicleType || "غير محدد")}
                 ${createDetailRow("رقم المركبة", request.vehicleNumber || "غير محدد")}
             `;
-    } else if (request.userType === "vendor") {
+    } else if (request.user_type === "vendor") {
       specificInfo = `
                 ${createDetailRow("اسم المتجر", request.storeName || "غير محدد")}
                 ${createDetailRow("نوع النشاط", request.businessType || "غير محدد")}
                 ${createDetailRow("العنوان", request.address || "غير محدد")}
             `;
-    } else if (request.userType === "company") {
+    } else if (request.user_type === "company") {
       specificInfo = `
                 ${createDetailRow("اسم الشركة", request.companyName || "غير محدد")}
                 ${createDetailRow("السجل التجاري", request.commercialRegister || "غير محدد")}
@@ -346,8 +316,8 @@ async function rejectCurrentRequest() {
 // Quick accept request
 async function acceptRequest(requestId) {
   try {
-    const requests = await fetchPendingRegistrations();
-    currentRequestDetails = requests.find((r) => r.id === requestId);
+    const result = await fetchPendingRegistrations();
+    currentRequestDetails = (result.requests || []).find((r) => r.id === requestId);
     await approveCurrentRequest();
   } catch (error) {
     console.error("Error accepting request:", error);
@@ -358,8 +328,8 @@ async function acceptRequest(requestId) {
 // Quick reject request
 async function rejectRequest(requestId) {
   try {
-    const requests = await fetchPendingRegistrations();
-    currentRequestDetails = requests.find((r) => r.id === requestId);
+    const result = await fetchPendingRegistrations();
+    currentRequestDetails = (result.requests || []).find((r) => r.id === requestId);
     await rejectCurrentRequest();
   } catch (error) {
     console.error("Error rejecting request:", error);
@@ -374,8 +344,16 @@ function showRejectedRequests() {
 }
 
 // View user details
-function viewUser(userId) {
-  const user = users.find((u) => u.id === userId);
+async function viewUser(userId) {
+  let user = users.find((u) => u.id === userId);
+  try {
+    const result = await fetchUserById(userId);
+    if (result.status) {
+      user = result.user;
+    }
+  } catch (err) {
+    console.error("Error fetching user details:", err);
+  }
   if (!user) {
     alert("المستخدم غير موجود");
     return;
@@ -420,22 +398,27 @@ function viewUser(userId) {
 }
 
 // Edit user
-function editUser(userId) {
-  const user = users.find((u) => u.id === userId);
-  if (!user) {
-    alert("المستخدم غير موجود");
-    return;
+async function editUser(userId) {
+  try {
+    const result = await fetchUserById(userId);
+    if (!result.status) {
+      alert("حدث خطأ في جلب بيانات المستخدم");
+      return;
+    }
+    const user = result.user;
+
+    document.getElementById("editUserId").value = user.id;
+    document.getElementById("editUserName").value = user.name;
+    document.getElementById("editUserEmail").value = user.email;
+    document.getElementById("editUserPhone").value = user.phone;
+    document.getElementById("editUserType").value = user.user_type;
+    document.getElementById("editUserStatus").value = user.is_approved;
+
+    document.getElementById("editUserModal").style.display = "block";
+  } catch (error) {
+    console.error("Error loading user details:", error);
+    alert("حدث خطأ في جلب بيانات المستخدم");
   }
-
-  // Populate edit form with user data
-  document.getElementById("editUserId").value = user.id;
-  document.getElementById("editUserName").value = user.name;
-  document.getElementById("editUserEmail").value = user.email;
-  document.getElementById("editUserPhone").value = user.phone;
-  document.getElementById("editUserType").value = user.userType;
-  document.getElementById("editUserStatus").value = user.status;
-
-  document.getElementById("editUserModal").style.display = "block";
 }
 
 // Show delete modal for user
@@ -493,8 +476,8 @@ async function saveUser() {
     name: document.getElementById("userName").value,
     email: document.getElementById("userEmail").value,
     phone: document.getElementById("userPhone").value,
-    userType: document.getElementById("userType").value,
-    status: document.getElementById("userStatus").value,
+    user_type: document.getElementById("userType").value,
+    is_approved: document.getElementById("userStatus").value,
   };
 
   try {
@@ -517,8 +500,8 @@ async function saveEditedUser() {
     name: document.getElementById("editUserName").value,
     email: document.getElementById("editUserEmail").value,
     phone: document.getElementById("editUserPhone").value,
-    userType: document.getElementById("editUserType").value,
-    status: document.getElementById("editUserStatus").value,
+    user_type: document.getElementById("editUserType").value,
+    is_approved: document.getElementById("editUserStatus").value,
   };
 
   try {
