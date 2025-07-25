@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>رسائل المستخدمين - مسار</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <div id="header-container"></div>
+    
+    <!-- Sidebar -->
+    <div id="sidebar-container"></div>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="content-wrapper">
+            <div class="page-header">
+                <h1><i class="fas fa-comments"></i> رسائل المستخدمين</h1>
+                <p>إدارة والرد على رسائل العملاء والمستخدمين</p>
+            </div>
+            
+            <!-- Messages Statistics -->
+            <div class="dashboard-grid">
+                <div class="dashboard-card">
+                    <div class="card-icon">
+                        <i class="fas fa-inbox"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>رسائل جديدة</h3>
+                        <span class="card-number">24</span>
+                    </div>
+                </div>
+                
+                <div class="dashboard-card">
+                    <div class="card-icon">
+                        <i class="fas fa-reply"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>تم الرد عليها</h3>
+                        <span class="card-number">156</span>
+                    </div>
+                </div>
+                
+                <div class="dashboard-card">
+                    <div class="card-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>متوسط وقت الرد</h3>
+                        <span class="card-number">2.5 ساعة</span>
+                    </div>
+                </div>
+                
+                <div class="dashboard-card">
+                    <div class="card-icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>تقييم الخدمة</h3>
+                        <span class="card-number">4.8/5</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Messages Interface -->
+            <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 2rem; height: 70vh;">
+                <!-- Messages List -->
+                <div class="messages-sidebar">
+                    <div class="messages-header">
+                        <h3><i class="fas fa-list"></i> قائمة الرسائل</h3>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <button class="btn btn-primary btn-sm" onclick="composeMessage()">
+                                <i class="fas fa-plus"></i> رسالة جديدة
+                            </button>
+                            <button class="btn btn-secondary btn-sm" onclick="refreshMessages()">
+                                <i class="fas fa-sync"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Message Filters -->
+                    <div class="message-filters">
+                        <select class="form-control" id="messageFilter" onchange="filterMessages()">
+                            <option value="all">جميع الرسائل</option>
+                            <option value="unread">غير مقروءة</option>
+                            <option value="read">مقروءة</option>
+                            <option value="replied">تم الرد عليها</option>
+                            <option value="important">مهمة</option>
+                        </select>
+                        <input type="text" class="form-control" placeholder="البحث في الرسائل..." id="messageSearch" oninput="searchMessages()">
+                    </div>
+                    
+                    <!-- Messages List -->
+                    <div class="messages-list">
+                        <div class="message-item unread active" onclick="selectMessage(1)">
+                            <div class="message-avatar">أ.م</div>
+                            <div class="message-content">
+                                <div class="message-header">
+                                    <span class="sender-name">أحمد محمد</span>
+                                    <span class="message-time">منذ 5 دقائق</span>
+                                </div>
+                                <div class="message-subject">استفسار حول الطلب #ORD-2024-001</div>
+                                <div class="message-preview">مرحباً، أريد الاستفسار عن حالة طلبي...</div>
+                                <div class="message-badges">
+                                    <span class="badge badge-new">جديد</span>
+                                    <span class="badge badge-important">مهم</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="message-item" onclick="selectMessage(2)">
+                            <div class="message-avatar">س.أ</div>
+                            <div class="message-content">
+                                <div class="message-header">
+                                    <span class="sender-name">سارة أحمد</span>
+                                    <span class="message-time">منذ ساعة</span>
+                                </div>
+                                <div class="message-subject">شكر وتقدير</div>
+                                <div class="message-preview">أشكركم على الخدمة الممتازة...</div>
+                                <div class="message-badges">
+                                    <span class="badge badge-replied">تم الرد</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="message-item" onclick="selectMessage(3)">
+                            <div class="message-avatar">م.ع</div>
+                            <div class="message-content">
+                                <div class="message-header">
+                                    <span class="sender-name">محمد عبدالله</span>
+                                    <span class="message-time">منذ 3 ساعات</span>
+                                </div>
+                                <div class="message-subject">طلب تعديل البيانات</div>
+                                <div class="message-preview">أرغب في تعديل بعض البيانات في حسابي...</div>
+                                <div class="message-badges">
+                                    <span class="badge badge-pending">قيد المراجعة</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="message-item" onclick="selectMessage(4)">
+                            <div class="message-avatar">ف.ح</div>
+                            <div class="message-content">
+                                <div class="message-header">
+                                    <span class="sender-name">فاطمة حسن</span>
+                                    <span class="message-time">أمس</span>
+                                </div>
+                                <div class="message-subject">مشكلة في تسجيل الدخول</div>
+                                <div class="message-preview">لا أستطيع تسجيل الدخول إلى حسابي...</div>
+                                <div class="message-badges">
+                                    <span class="badge badge-replied">تم الرد</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Message Details -->
+                <div class="message-details">
+                    <div class="message-detail-header">
+                        <div class="message-info">
+                            <h3>استفسار حول الطلب #ORD-2024-001</h3>
+                            <div class="message-meta">
+                                <span><i class="fas fa-user"></i> أحمد محمد (ahmed@example.com)</span>
+                                <span><i class="fas fa-clock"></i> 20 يناير 2024، 10:30 ص</span>
+                                <span><i class="fas fa-tag"></i> استفسار</span>
+                            </div>
+                        </div>
+                        <div class="message-actions">
+                            <button class="btn btn-primary" onclick="replyToMessage()">
+                                <i class="fas fa-reply"></i> رد
+                            </button>
+                            <button class="btn btn-secondary" onclick="forwardMessage()">
+                                <i class="fas fa-share"></i> إعادة توجيه
+                            </button>
+                            <button class="btn btn-secondary" onclick="markAsImportant()">
+                                <i class="fas fa-star"></i> مهم
+                            </button>
+                            <button class="btn btn-danger" onclick="deleteMessage()">
+                                <i class="fas fa-trash"></i> حذف
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Message Thread -->
+                    <div class="message-thread">
+                        <div class="message-bubble user-message">
+                            <div class="message-bubble-header">
+                                <div class="sender-avatar">أ.م</div>
+                                <div class="sender-info">
+                                    <span class="sender-name">أحمد محمد</span>
+                                    <span class="message-timestamp">20 يناير 2024، 10:30 ص</span>
+                                </div>
+                            </div>
+                            <div class="message-bubble-content">
+                                <p>مرحباً،</p>
+                                <p>أريد الاستفسار عن حالة طلبي رقم #ORD-2024-001. لقد مر أسبوع على تقديم الطلب ولم أتلق أي تحديث حول حالته.</p>
+                                <p>هل يمكنكم إفادتي بالوضع الحالي ومتى يمكن توقع اكتمال الطلب؟</p>
+                                <p>شكراً لكم</p>
+                            </div>
+                            <div class="message-attachments">
+                                <div class="attachment">
+                                    <i class="fas fa-file-pdf"></i>
+                                    <span>طلب_رقم_001.pdf</span>
+                                    <button class="btn-download"><i class="fas fa-download"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="message-bubble admin-message">
+                            <div class="message-bubble-header">
+                                <div class="sender-avatar admin">إ</div>
+                                <div class="sender-info">
+                                    <span class="sender-name">فريق الدعم</span>
+                                    <span class="message-timestamp">20 يناير 2024، 11:15 ص</span>
+                                </div>
+                            </div>
+                            <div class="message-bubble-content">
+                                <p>مرحباً أحمد،</p>
+                                <p>شكراً لتواصلك معنا. بعد مراجعة طلبك رقم #ORD-2024-001، يسرنا إفادتك بأن طلبك قيد التنفيذ حالياً وقد تم إنجاز 65% منه.</p>
+                                <p>نتوقع اكتمال الطلب خلال 3-5 أيام عمل. سنقوم بإرسال تحديث آخر عند اكتمال الطلب.</p>
+                                <p>نعتذر عن التأخير ونشكرك على صبرك.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Reply Form -->
+                    <div class="reply-form">
+                        <div class="reply-header">
+                            <h4><i class="fas fa-reply"></i> الرد على الرسالة</h4>
+                            <div class="reply-options">
+                                <select class="form-control" id="replyTemplate">
+                                    <option value="">اختر قالب جاهز</option>
+                                    <option value="thanks">شكر العميل</option>
+                                    <option value="apology">اعتذار</option>
+                                    <option value="followup">متابعة</option>
+                                    <option value="resolution">حل المشكلة</option>
+                                </select>
+                            </div>
+                        </div>
+                        <textarea class="form-control" rows="4" placeholder="اكتب ردك هنا..." id="replyContent"></textarea>
+                        <div class="reply-attachments">
+                            <input type="file" id="replyAttachment" multiple style="display: none;">
+                            <button class="btn btn-secondary" onclick="document.getElementById('replyAttachment').click()">
+                                <i class="fas fa-paperclip"></i> إرفاق ملف
+                            </button>
+                        </div>
+                        <div class="reply-actions">
+                            <button class="btn btn-primary" onclick="sendReply()">
+                                <i class="fas fa-paper-plane"></i> إرسال الرد
+                            </button>
+                            <button class="btn btn-secondary" onclick="saveDraft()">
+                                <i class="fas fa-save"></i> حفظ كمسودة
+                            </button>
+                            <button class="btn btn-secondary" onclick="scheduleReply()">
+                                <i class="fas fa-clock"></i> جدولة الإرسال
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <script src="assets/js/components.js"></script>
+    <script src="assets/js/main.js"></script>
+    <script>
+        // Page-specific JavaScript
+        let selectedMessageId = 1;
+        
+        function selectMessage(messageId) {
+            // Remove active class from all messages
+            document.querySelectorAll('.message-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Add active class to selected message
+            event.currentTarget.classList.add('active');
+            
+            // Mark as read
+            event.currentTarget.classList.remove('unread');
+            
+            selectedMessageId = messageId;
+            loadMessageDetails(messageId);
+        }
+        
+        function loadMessageDetails(messageId) {
+            // This would typically load message details from server
+            showNotification(`تم تحميل تفاصيل الرسالة ${messageId}`, 'info');
+        }
+        
+        function filterMessages() {
+            const filter = document.getElementById('messageFilter').value;
+            showNotification(`تصفية الرسائل: ${filter}`, 'info');
+        }
+        
+        function searchMessages() {
+            const query = document.getElementById('messageSearch').value;
+            if (query.length > 2) {
+                showNotification(`البحث عن: ${query}`, 'info');
+            }
+        }
+        
+        function composeMessage() {
+            showNotification('فتح نافذة إنشاء رسالة جديدة', 'info');
+        }
+        
+        function refreshMessages() {
+            showLoading();
+            setTimeout(() => {
+                hideLoading();
+                showNotification('تم تحديث قائمة الرسائل', 'success');
+            }, 1000);
+        }
+        
+        function replyToMessage() {
+            document.getElementById('replyContent').focus();
+            showNotification('يمكنك الآن كتابة ردك', 'info');
+        }
+        
+        function forwardMessage() {
+            showNotification('إعادة توجيه الرسالة', 'info');
+        }
+        
+        function markAsImportant() {
+            showNotification('تم وضع علامة مهم على الرسالة', 'success');
+        }
+        
+        function deleteMessage() {
+            if (confirm('هل تريد حذف هذه الرسالة؟')) {
+                showNotification('تم حذف الرسالة', 'success');
+            }
+        }
+        
+        function sendReply() {
+            const content = document.getElementById('replyContent').value;
+            if (content.trim()) {
+                showLoading();
+                setTimeout(() => {
+                    hideLoading();
+                    showNotification('تم إرسال الرد بنجاح', 'success');
+                    document.getElementById('replyContent').value = '';
+                }, 1500);
+            } else {
+                showNotification('يرجى كتابة محتوى الرد', 'warning');
+            }
+        }
+        
+        function saveDraft() {
+            const content = document.getElementById('replyContent').value;
+            if (content.trim()) {
+                showNotification('تم حفظ المسودة', 'success');
+            }
+        }
+        
+        function scheduleReply() {
+            const datetime = prompt('أدخل تاريخ ووقت الإرسال (YYYY-MM-DD HH:MM):');
+            if (datetime) {
+                showNotification(`تم جدولة الرد للإرسال في ${datetime}`, 'success');
+            }
+        }
+        
+        // Reply template functionality
+        document.getElementById('replyTemplate').addEventListener('change', function() {
+            const templates = {
+                'thanks': 'شكراً لتواصلك معنا. نقدر ثقتك في خدماتنا.',
+                'apology': 'نعتذر عن أي إزعاج قد تسبب لك. نحن نعمل على حل المشكلة.',
+                'followup': 'نتابع معك حالة طلبك وسنقوم بإعلامك بأي تطورات.',
+                'resolution': 'تم حل المشكلة بنجاح. يرجى التأكد من أن كل شيء يعمل بشكل صحيح.'
+            };
+            
+            if (this.value && templates[this.value]) {
+                document.getElementById('replyContent').value = templates[this.value];
+            }
+        });
+        
+        // Auto-save draft functionality
+        let draftTimer;
+        document.getElementById('replyContent').addEventListener('input', function() {
+            clearTimeout(draftTimer);
+            draftTimer = setTimeout(() => {
+                if (this.value.trim()) {
+                    // Auto-save draft
+                    console.log('Auto-saving draft...');
+                }
+            }, 3000);
+        });
+    </script>
+    
+    <style>
+        .messages-sidebar {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        
+        .messages-header {
+            padding: 1rem;
+            border-bottom: 1px solid var(--light-gray);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .message-filters {
+            padding: 1rem;
+            border-bottom: 1px solid var(--light-gray);
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .messages-list {
+            flex: 1;
+            overflow-y: auto;
+        }
+        
+        .message-item {
+            padding: 1rem;
+            border-bottom: 1px solid var(--light-gray);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .message-item:hover {
+            background: var(--light-yellow);
+        }
+        
+        .message-item.active {
+            background: var(--primary-yellow);
+            border-right: 4px solid var(--secondary-yellow);
+        }
+        
+        .message-item.unread {
+            background: #f8f9fa;
+            font-weight: 600;
+        }
+        
+        .message-avatar {
+            width: 40px;
+            height: 40px;
+            background: var(--primary-yellow);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--dark-gray);
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+        
+        .message-content {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.25rem;
+        }
+        
+        .sender-name {
+            font-weight: 600;
+            color: var(--dark-gray);
+        }
+        
+        .message-time {
+            font-size: 0.8rem;
+            color: var(--primary-gray);
+        }
+        
+        .message-subject {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            color: var(--dark-gray);
+        }
+        
+        .message-preview {
+            font-size: 0.9rem;
+            color: var(--primary-gray);
+            margin-bottom: 0.5rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        .message-badges {
+            display: flex;
+            gap: 0.25rem;
+            flex-wrap: wrap;
+        }
+        
+        .badge {
+            padding: 0.2rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+        
+        .badge-new {
+            background: #007bff;
+            color: white;
+        }
+        
+        .badge-important {
+            background: #dc3545;
+            color: white;
+        }
+        
+        .badge-replied {
+            background: #28a745;
+            color: white;
+        }
+        
+        .badge-pending {
+            background: #ffc107;
+            color: #333;
+        }
+        
+        .message-details {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        
+        .message-detail-header {
+            padding: 1rem;
+            border-bottom: 1px solid var(--light-gray);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+        
+        .message-info h3 {
+            margin: 0 0 0.5rem 0;
+            color: var(--dark-gray);
+        }
+        
+        .message-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+            font-size: 0.9rem;
+            color: var(--primary-gray);
+        }
+        
+        .message-meta i {
+            margin-left: 0.5rem;
+            width: 16px;
+        }
+        
+        .message-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .message-thread {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .message-bubble {
+            max-width: 80%;
+            border-radius: 12px;
+            padding: 1rem;
+        }
+        
+        .user-message {
+            align-self: flex-start;
+            background: #f8f9fa;
+            border: 1px solid var(--light-gray);
+        }
+        
+        .admin-message {
+            align-self: flex-end;
+            background: var(--light-yellow);
+            border: 1px solid var(--primary-yellow);
+        }
+        
+        .message-bubble-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .sender-avatar {
+            width: 30px;
+            height: 30px;
+            background: var(--primary-yellow);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--dark-gray);
+            font-weight: bold;
+            font-size: 0.8rem;
+        }
+        
+        .sender-avatar.admin {
+            background: var(--secondary-yellow);
+        }
+        
+        .sender-info {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .message-timestamp {
+            font-size: 0.7rem;
+            color: var(--primary-gray);
+        }
+        
+        .message-bubble-content p {
+            margin: 0 0 0.5rem 0;
+            line-height: 1.5;
+        }
+        
+        .message-bubble-content p:last-child {
+            margin-bottom: 0;
+        }
+        
+        .message-attachments {
+            margin-top: 0.5rem;
+        }
+        
+        .attachment {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            background: white;
+            border-radius: 6px;
+            border: 1px solid var(--light-gray);
+        }
+        
+        .btn-download {
+            background: none;
+            border: none;
+            color: var(--primary-yellow);
+            cursor: pointer;
+            padding: 0.25rem;
+        }
+        
+        .reply-form {
+            border-top: 1px solid var(--light-gray);
+            padding: 1rem;
+        }
+        
+        .reply-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .reply-header h4 {
+            margin: 0;
+            color: var(--dark-gray);
+        }
+        
+        .reply-options select {
+            width: 200px;
+        }
+        
+        .reply-attachments {
+            margin: 1rem 0;
+        }
+        
+        .reply-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        
+        @media (max-width: 768px) {
+            .content-wrapper > div:nth-child(2) {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+            
+            .messages-sidebar {
+                height: 400px;
+            }
+            
+            .message-details {
+                height: 600px;
+            }
+            
+            .message-actions {
+                flex-direction: column;
+            }
+            
+            .reply-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+        }
+    </style>
+</body>
+</html>

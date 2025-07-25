@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>استقبال الطلبات - مسار</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <div id="header-container"></div>
+    
+    <!-- Sidebar -->
+    <div id="sidebar-container"></div>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="content-wrapper">
+            <div class="page-header">
+                <h1><i class="fas fa-inbox"></i> استقبال الطلبات</h1>
+                <p>استقبال وتسجيل الطلبات الجديدة من العملاء</p>
+            </div>
+            
+            <!-- New Order Form -->
+            <div class="form-container">
+                <h2><i class="fas fa-plus-circle"></i> إضافة طلب جديد</h2>
+                <form id="newOrderForm">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label>اسم العميل *</label>
+                            <input type="text" class="form-control" name="customerName" required placeholder="أدخل اسم العميل">
+                        </div>
+                        <div class="form-group">
+                            <label>رقم الهاتف *</label>
+                            <input type="tel" class="form-control" name="phone" required placeholder="05xxxxxxxx">
+                        </div>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label>البريد الإلكتروني</label>
+                            <input type="email" class="form-control" name="email" placeholder="example@domain.com">
+                        </div>
+                        <div class="form-group">
+                            <label>نوع الطلب *</label>
+                            <select class="form-control" name="orderType" required>
+                                <option value="">اختر نوع الطلب</option>
+                                <option value="service">خدمة</option>
+                                <option value="product">منتج</option>
+                                <option value="consultation">استشارة</option>
+                                <option value="support">دعم فني</option>
+                                <option value="maintenance">صيانة</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label>الأولوية</label>
+                            <select class="form-control" name="priority">
+                                <option value="low">منخفضة</option>
+                                <option value="medium" selected>متوسطة</option>
+                                <option value="high">عالية</option>
+                                <option value="urgent">عاجلة</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>المبلغ المتوقع (ر.س)</label>
+                            <input type="number" class="form-control" name="estimatedAmount" placeholder="0.00" step="0.01">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>وصف الطلب *</label>
+                        <textarea class="form-control" name="description" rows="4" required placeholder="أدخل تفاصيل الطلب..."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>ملاحظات إضافية</label>
+                        <textarea class="form-control" name="notes" rows="3" placeholder="أي ملاحظات أو تعليقات إضافية..."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>المرفقات</label>
+                        <input type="file" class="form-control" name="attachments" multiple accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
+                        <small style="color: var(--primary-gray); margin-top: 0.5rem; display: block;">يمكنك رفع ملفات PDF, Word, أو صور</small>
+                    </div>
+                    
+                    <div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 2rem;">
+                        <button type="button" class="btn btn-secondary" onclick="resetForm()">
+                            <i class="fas fa-undo"></i> إعادة تعيين
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> حفظ الطلب
+                        </button>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- Recent Orders -->
+            <div class="form-container">
+                <h2><i class="fas fa-clock"></i> الطلبات الأخيرة</h2>
+                <div class="table-container">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>رقم الطلب</th>
+                                <th>العميل</th>
+                                <th>نوع الطلب</th>
+                                <th>الأولوية</th>
+                                <th>التاريخ</th>
+                                <th>الحالة</th>
+                                <th>الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recentOrdersTable">
+                            <tr>
+                                <td><strong>#ORD-2024-004</strong></td>
+                                <td>
+                                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                        <div class="customer-avatar">ف.ع</div>
+                                        <div>
+                                            <div>فاطمة علي</div>
+                                            <small style="color: var(--primary-gray);">0501234567</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td><span class="type-service">خدمة</span></td>
+                                <td><span class="priority-high">عالية</span></td>
+                                <td>منذ 5 دقائق</td>
+                                <td><span class="status-new">جديد</span></td>
+                                <td>
+                                    <button class="btn-icon" onclick="editOrder('ORD-2024-004')" data-tooltip="تعديل">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn-icon" onclick="viewOrder('ORD-2024-004')" data-tooltip="عرض">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button class="btn-icon btn-danger" onclick="deleteOrder('ORD-2024-004')" data-tooltip="حذف">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>#ORD-2024-005</strong></td>
+                                <td>
+                                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                        <div class="customer-avatar">ع.س</div>
+                                        <div>
+                                            <div>عبدالرحمن سعد</div>
+                                            <small style="color: var(--primary-gray);">0509876543</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td><span class="type-product">منتج</span></td>
+                                <td><span class="priority-medium">متوسطة</span></td>
+                                <td>منذ 15 دقيقة</td>
+                                <td><span class="status-new">جديد</span></td>
+                                <td>
+                                    <button class="btn-icon" onclick="editOrder('ORD-2024-005')" data-tooltip="تعديل">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn-icon" onclick="viewOrder('ORD-2024-005')" data-tooltip="عرض">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button class="btn-icon btn-danger" onclick="deleteOrder('ORD-2024-005')" data-tooltip="حذف">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><strong>#ORD-2024-006</strong></td>
+                                <td>
+                                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                        <div class="customer-avatar">ن.م</div>
+                                        <div>
+                                            <div>نورا محمد</div>
+                                            <small style="color: var(--primary-gray);">0551234567</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td><span class="type-consultation">استشارة</span></td>
+                                <td><span class="priority-low">منخفضة</span></td>
+                                <td>منذ 30 دقيقة</td>
+                                <td><span class="status-processing">قيد المعالجة</span></td>
+                                <td>
+                                    <button class="btn-icon" onclick="editOrder('ORD-2024-006')" data-tooltip="تعديل">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="btn-icon" onclick="viewOrder('ORD-2024-006')" data-tooltip="عرض">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button class="btn-icon btn-danger" onclick="deleteOrder('ORD-2024-006')" data-tooltip="حذف">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Quick Stats -->
+            <div class="dashboard-grid">
+                <div class="dashboard-card">
+                    <div class="card-icon">
+                        <i class="fas fa-plus"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>طلبات اليوم</h3>
+                        <span class="card-number">12</span>
+                    </div>
+                </div>
+                
+                <div class="dashboard-card">
+                    <div class="card-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>متوسط وقت الاستجابة</h3>
+                        <span class="card-number">15 دقيقة</span>
+                    </div>
+                </div>
+                
+                <div class="dashboard-card">
+                    <div class="card-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>معدل النمو</h3>
+                        <span class="card-number">+25%</span>
+                    </div>
+                </div>
+                
+                <div class="dashboard-card">
+                    <div class="card-icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>تقييم الخدمة</h3>
+                        <span class="card-number">4.8/5</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <script src="assets/js/components.js"></script>
+    <script src="assets/js/main.js"></script>
+    <script>
+        // Page-specific JavaScript
+        document.getElementById('newOrderForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const orderData = {
+                customerName: formData.get('customerName'),
+                phone: formData.get('phone'),
+                email: formData.get('email'),
+                orderType: formData.get('orderType'),
+                priority: formData.get('priority'),
+                estimatedAmount: formData.get('estimatedAmount'),
+                description: formData.get('description'),
+                notes: formData.get('notes')
+            };
+            
+            showLoading();
+            
+            setTimeout(() => {
+                hideLoading();
+                showNotification('تم حفظ الطلب بنجاح', 'success');
+                
+                // Generate order number
+                const orderNumber = 'ORD-2024-' + String(Date.now()).slice(-3);
+                showNotification(`رقم الطلب: ${orderNumber}`, 'info');
+                
+                // Reset form
+                this.reset();
+                
+                // Add to recent orders table
+                addToRecentOrders(orderData, orderNumber);
+            }, 2000);
+        });
+        
+        function resetForm() {
+            document.getElementById('newOrderForm').reset();
+            showNotification('تم إعادة تعيين النموذج', 'info');
+        }
+        
+        function addToRecentOrders(orderData, orderNumber) {
+            const tableBody = document.getElementById('recentOrdersTable');
+            const newRow = document.createElement('tr');
+            
+            const initials = orderData.customerName.split(' ').map(name => name[0]).join('.');
+            
+            newRow.innerHTML = `
+                <td><strong>#${orderNumber}</strong></td>
+                <td>
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <div class="customer-avatar">${initials}</div>
+                        <div>
+                            <div>${orderData.customerName}</div>
+                            <small style="color: var(--primary-gray);">${orderData.phone}</small>
+                        </div>
+                    </div>
+                </td>
+                <td><span class="type-${orderData.orderType}">${getOrderTypeText(orderData.orderType)}</span></td>
+                <td><span class="priority-${orderData.priority}">${getPriorityText(orderData.priority)}</span></td>
+                <td>الآن</td>
+                <td><span class="status-new">جديد</span></td>
+                <td>
+                    <button class="btn-icon" onclick="editOrder('${orderNumber}')" data-tooltip="تعديل">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn-icon" onclick="viewOrder('${orderNumber}')" data-tooltip="عرض">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                    <button class="btn-icon btn-danger" onclick="deleteOrder('${orderNumber}')" data-tooltip="حذف">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </td>
+            `;
+            
+            tableBody.insertBefore(newRow, tableBody.firstChild);
+        }
+        
+        function getOrderTypeText(type) {
+            const types = {
+                'service': 'خدمة',
+                'product': 'منتج',
+                'consultation': 'استشارة',
+                'support': 'دعم فني',
+                'maintenance': 'صيانة'
+            };
+            return types[type] || type;
+        }
+        
+        function getPriorityText(priority) {
+            const priorities = {
+                'low': 'منخفضة',
+                'medium': 'متوسطة',
+                'high': 'عالية',
+                'urgent': 'عاجلة'
+            };
+            return priorities[priority] || priority;
+        }
+        
+        function editOrder(orderId) {
+            showNotification(`تعديل الطلب ${orderId}`, 'info');
+        }
+        
+        function viewOrder(orderId) {
+            showNotification(`عرض تفاصيل الطلب ${orderId}`, 'info');
+        }
+        
+        function deleteOrder(orderId) {
+            if (confirm(`هل أنت متأكد من حذف الطلب ${orderId}؟`)) {
+                showNotification(`تم حذف الطلب ${orderId}`, 'success');
+            }
+        }
+    </script>
+    
+    <style>
+        .customer-avatar {
+            width: 35px;
+            height: 35px;
+            background: var(--primary-yellow);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--dark-gray);
+            font-weight: bold;
+            font-size: 0.8rem;
+        }
+        
+        .type-service {
+            background: #007bff;
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+        }
+        
+        .type-product {
+            background: #28a745;
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+        }
+        
+        .type-consultation {
+            background: #ffc107;
+            color: #333;
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+        }
+        
+        .type-support {
+            background: #17a2b8;
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+        }
+        
+        .type-maintenance {
+            background: #6f42c1;
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+        }
+        
+        .priority-high, .priority-urgent {
+            color: #dc3545;
+            font-weight: 600;
+        }
+        
+        .priority-medium {
+            color: #ffc107;
+            font-weight: 600;
+        }
+        
+        .priority-low {
+            color: #28a745;
+            font-weight: 600;
+        }
+        
+        .status-new {
+            color: #007bff;
+            font-weight: 600;
+        }
+        
+        .status-processing {
+            color: #ffc107;
+            font-weight: 600;
+        }
+        
+        .btn-icon {
+            background: none;
+            border: none;
+            padding: 0.5rem;
+            margin: 0 0.25rem;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--primary-gray);
+        }
+        
+        .btn-icon:hover {
+            background: var(--light-yellow);
+            color: var(--dark-gray);
+        }
+        
+        .btn-danger:hover {
+            background: #dc3545;
+            color: var(--white);
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary-yellow);
+            box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.1);
+        }
+        
+        @media (max-width: 768px) {
+            .form-container > div[style*="grid-template-columns"] {
+                grid-template-columns: 1fr !important;
+            }
+        }
+    </style>
+</body>
+</html>

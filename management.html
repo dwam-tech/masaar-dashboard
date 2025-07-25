@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الإدارة - مسار</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <div id="header-container"></div>
+    
+    <!-- Sidebar -->
+    <div id="sidebar-container"></div>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="content-wrapper">
+            <div class="page-header">
+                <h1><i class="fas fa-users-cog"></i> الإدارة</h1>
+                <p>إدارة المديرين والصلاحيات والإعدادات المتقدمة</p>
+            </div>
+            
+            <!-- Management Overview -->
+            <div class="dashboard-grid">
+                <div class="dashboard-card">
+                    <div class="card-icon">
+                        <i class="fas fa-user-shield"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>المديرين النشطين</h3>
+                        <span class="card-number">8</span>
+                    </div>
+                </div>
+                
+                <div class="dashboard-card">
+                    <div class="card-icon">
+                        <i class="fas fa-key"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>الأدوار المحددة</h3>
+                        <span class="card-number">12</span>
+                    </div>
+                </div>
+                
+                <div class="dashboard-card">
+                    <div class="card-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>الصلاحيات</h3>
+                        <span class="card-number">45</span>
+                    </div>
+                </div>
+                
+                <div class="dashboard-card">
+                    <div class="card-icon">
+                        <i class="fas fa-history"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>آخر نشاط</h3>
+                        <span class="card-number">منذ 5 دقائق</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Management Tabs -->
+            <div class="tabs-container">
+                <div class="tabs-nav">
+                    <button class="tab-btn active" onclick="showTab('admins')">إدارة المديرين</button>
+                    <button class="tab-btn" onclick="showTab('roles')">الأدوار والصلاحيات</button>
+                    <button class="tab-btn" onclick="showTab('audit')">سجل المراجعة</button>
+                    <button class="tab-btn" onclick="showTab('reports')">التقارير</button>
+                    <button class="tab-btn" onclick="showTab('advanced')">الإعدادات المتقدمة</button>
+                </div>
+                
+                <!-- Admins Management Tab -->
+                <div id="admins-tab" class="tab-content active">
+                    <div class="form-container">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                            <h2><i class="fas fa-user-plus"></i> إدارة المديرين</h2>
+                            <button class="btn btn-primary" onclick="addNewAdmin()">
+                                <i class="fas fa-plus"></i> إضافة مدير جديد
+                            </button>
+                        </div>
+                        
+                        <!-- Search and Filter -->
+                        <div style="display: grid; grid-template-columns: 1fr 200px 200px; gap: 1rem; margin-bottom: 2rem;">
+                            <input type="text" class="form-control" placeholder="البحث عن مدير..." id="adminSearch">
+                            <select class="form-control" id="roleFilter">
+                                <option value="">جميع الأدوار</option>
+                                <option value="super_admin">مدير عام</option>
+                                <option value="admin">مدير</option>
+                                <option value="moderator">مشرف</option>
+                                <option value="support">دعم فني</option>
+                            </select>
+                            <select class="form-control" id="statusFilter">
+                                <option value="">جميع الحالات</option>
+                                <option value="active">نشط</option>
+                                <option value="inactive">غير نشط</option>
+                                <option value="suspended">معلق</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Admins Table -->
+                        <div class="table-container">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>المدير</th>
+                                        <th>الدور</th>
+                                        <th>الصلاحيات</th>
+                                        <th>آخر نشاط</th>
+                                        <th>الحالة</th>
+                                        <th>الإجراءات</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                                <div class="admin-avatar">أ.ع</div>
+                                                <div>
+                                                    <div><strong>أحمد عبدالله</strong></div>
+                                                    <small>ahmed.admin@masar.com</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td><span class="role-super-admin">مدير عام</span></td>
+                                        <td><span class="permissions-full">كامل</span></td>
+                                        <td>منذ 5 دقائق</td>
+                                        <td><span class="status-active">نشط</span></td>
+                                        <td>
+                                            <button class="btn-icon" onclick="editAdmin(1)" data-tooltip="تعديل">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn-icon" onclick="viewAdminActivity(1)" data-tooltip="عرض النشاط">
+                                                <i class="fas fa-history"></i>
+                                            </button>
+                                            <button class="btn-icon" onclick="suspendAdmin(1)" data-tooltip="تعليق">
+                                                <i class="fas fa-ban"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                                <div class="admin-avatar">س.م</div>
+                                                <div>
+                                                    <div><strong>سارة محمد</strong></div>
+                                                    <small>sara.admin@masar.com</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td><span class="role-admin">مدير</span></td>
+                                        <td><span class="permissions-limited">محدود</span></td>
+                                        <td>منذ ساعة</td>
+                                        <td><span class="status-active">نشط</span></td>
+                                        <td>
+                                            <button class="btn-icon" onclick="editAdmin(2)" data-tooltip="تعديل">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn-icon" onclick="viewAdminActivity(2)" data-tooltip="عرض النشاط">
+                                                <i class="fas fa-history"></i>
+                                            </button>
+                                            <button class="btn-icon" onclick="suspendAdmin(2)" data-tooltip="تعليق">
+                                                <i class="fas fa-ban"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                                <div class="admin-avatar">م.أ</div>
+                                                <div>
+                                                    <div><strong>محمد أحمد</strong></div>
+                                                    <small>mohamed.support@masar.com</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td><span class="role-support">دعم فني</span></td>
+                                        <td><span class="permissions-basic">أساسي</span></td>
+                                        <td>أمس</td>
+                                        <td><span class="status-suspended">معلق</span></td>
+                                        <td>
+                                            <button class="btn-icon" onclick="editAdmin(3)" data-tooltip="تعديل">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn-icon" onclick="viewAdminActivity(3)" data-tooltip="عرض النشاط">
+                                                <i class="fas fa-history"></i>
+                                            </button>
+                                            <button class="btn-icon btn-success" onclick="activateAdmin(3)" data-tooltip="تفعيل">
+                                                <i class="fas fa-check"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Roles and Permissions Tab -->
+                <div id="roles-tab" class="tab-content">
+                    <div class="form-container">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                            <h2><i class="fas fa-key"></i> الأدوار والصلاحيات</h2>
+                            <button class="btn btn-primary" onclick="createNewRole()">
+                                <i class="fas fa-plus"></i> إنشاء دور جديد
+                            </button>
+                        </div>
+                        
+                        <!-- Roles Grid -->
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+                            <div class="role-card">
+                                <div class="role-header">
+                                    <h3><i class="fas fa-crown"></i> مدير عام</h3>
+                                    <span class="role-users">2 مستخدم</span>
+                                </div>
+                                <div class="role-description">
+                                    <p>صلاحيات كاملة لإدارة النظام والمستخدمين</p>
+                                </div>
+                                <div class="role-permissions">
+                                    <h4>الصلاحيات:</h4>
+                                    <div class="permissions-list">
+                                        <span class="permission-item"><i class="fas fa-check"></i> إدارة المستخدمين</span>
+                                        <span class="permission-item"><i class="fas fa-check"></i> إدارة الطلبات</span>
+                                        <span class="permission-item"><i class="fas fa-check"></i> إدارة النظام</span>
+                                        <span class="permission-item"><i class="fas fa-check"></i> عرض التقارير</span>
+                                        <span class="permission-item"><i class="fas fa-check"></i> إدارة الصلاحيات</span>
+                                    </div>
+                                </div>
+                                <div class="role-actions">
+                                    <button class="btn btn-secondary" onclick="editRole('super_admin')">
+                                        <i class="fas fa-edit"></i> تعديل
+                                    </button>
+                                    <button class="btn btn-secondary" onclick="duplicateRole('super_admin')">
+                                        <i class="fas fa-copy"></i> نسخ
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="role-card">
+                                <div class="role-header">
+                                    <h3><i class="fas fa-user-tie"></i> مدير</h3>
+                                    <span class="role-users">4 مستخدم</span>
+                                </div>
+                                <div class="role-description">
+                                    <p>صلاحيات إدارية محدودة للعمليات اليومية</p>
+                                </div>
+                                <div class="role-permissions">
+                                    <h4>الصلاحيات:</h4>
+                                    <div class="permissions-list">
+                                        <span class="permission-item"><i class="fas fa-check"></i> إدارة الطلبات</span>
+                                        <span class="permission-item"><i class="fas fa-check"></i> عرض المستخدمين</span>
+                                        <span class="permission-item"><i class="fas fa-check"></i> عرض التقارير</span>
+                                        <span class="permission-item"><i class="fas fa-times"></i> إدارة النظام</span>
+                                        <span class="permission-item"><i class="fas fa-times"></i> إدارة الصلاحيات</span>
+                                    </div>
+                                </div>
+                                <div class="role-actions">
+                                    <button class="btn btn-secondary" onclick="editRole('admin')">
+                                        <i class="fas fa-edit"></i> تعديل
+                                    </button>
+                                    <button class="btn btn-secondary" onclick="duplicateRole('admin')">
+                                        <i class="fas fa-copy"></i> نسخ
+                                    </button>
+                                    <button class="btn btn-danger" onclick="deleteRole('admin')">
+                                        <i class="fas fa-trash"></i> حذف
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="role-card">
+                                <div class="role-header">
+                                    <h3><i class="fas fa-headset"></i> دعم فني</h3>
+                                    <span class="role-users">2 مستخدم</span>
+                                </div>
+                                <div class="role-description">
+                                    <p>صلاحيات الدعم الفني والرد على الاستفسارات</p>
+                                </div>
+                                <div class="role-permissions">
+                                    <h4>الصلاحيات:</h4>
+                                    <div class="permissions-list">
+                                        <span class="permission-item"><i class="fas fa-check"></i> الرد على الرسائل</span>
+                                        <span class="permission-item"><i class="fas fa-check"></i> عرض الطلبات</span>
+                                        <span class="permission-item"><i class="fas fa-times"></i> تعديل الطلبات</span>
+                                        <span class="permission-item"><i class="fas fa-times"></i> إدارة المستخدمين</span>
+                                        <span class="permission-item"><i class="fas fa-times"></i> عرض التقارير</span>
+                                    </div>
+                                </div>
+                                <div class="role-actions">
+                                    <button class="btn btn-secondary" onclick="editRole('support')">
+                                        <i class="fas fa-edit"></i> تعديل
+                                    </button>
+                                    <button class="btn btn-secondary" onclick="duplicateRole('support')">
+                                        <i class="fas fa-copy"></i> نسخ
+                                    </button>
+                                    <button class="btn btn-danger" onclick="deleteRole('support')">
+                                        <i class="fas fa-trash"></i> حذف
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Audit Log Tab -->
+                <div id="audit-tab" class="tab-content">
+                    <div class="form-container">
+                        <h2><i class="fas fa-history"></i> سجل المراجعة</h2>
+                        
+                        <!-- Audit Filters -->
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+                            <input type="text" class="form-control" placeholder="البحث في السجل..." id="auditSearch">
+                            <select class="form-control" id="auditUserFilter">
+                                <option value="">جميع المستخدمين</option>
+                                <option value="admin1">أحمد عبدالله</option>
+                                <option value="admin2">سارة محمد</option>
+                            </select>
+                            <select class="form-control" id="auditActionFilter">
+                                <option value="">جميع الإجراءات</option>
+                                <option value="login">تسجيل دخول</option>
+                                <option value="create">إنشاء</option>
+                                <option value="update">تحديث</option>
+                                <option value="delete">حذف</option>
+                            </select>
+                            <input type="date" class="form-control" id="auditDateFilter">
+                        </div>
+                        
+                        <!-- Audit Table -->
+                        <div class="table-container">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>التاريخ والوقت</th>
+                                        <th>المستخدم</th>
+                                        <th>الإجراء</th>
+                                        <th>التفاصيل</th>
+                                        <th>عنوان IP</th>
+                                        <th>النتيجة</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>2024-01-20 10:30:15</td>
+                                        <td>أحمد عبدالله</td>
+                                        <td><span class="action-create">إنشاء مستخدم</span></td>
+                                        <td>إنشاء حساب جديد للمستخدم "محمد علي"</td>
+                                        <td>192.168.1.100</td>
+                                        <td><span class="result-success">نجح</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>2024-01-20 10:25:42</td>
+                                        <td>سارة محمد</td>
+                                        <td><span class="action-update">تحديث طلب</span></td>
+                                        <td>تحديث حالة الطلب #ORD-2024-001 إلى "مكتمل"</td>
+                                        <td>192.168.1.105</td>
+                                        <td><span class="result-success">نجح</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>2024-01-20 10:20:18</td>
+                                        <td>محمد أحمد</td>
+                                        <td><span class="action-login">تسجيل دخول</span></td>
+                                        <td>محاولة تسجيل دخول فاشلة</td>
+                                        <td>192.168.1.110</td>
+                                        <td><span class="result-failed">فشل</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>2024-01-20 10:15:33</td>
+                                        <td>أحمد عبدالله</td>
+                                        <td><span class="action-delete">حذف</span></td>
+                                        <td>حذف الطلب #ORD-2024-005</td>
+                                        <td>192.168.1.100</td>
+                                        <td><span class="result-success">نجح</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Reports Tab -->
+                <div id="reports-tab" class="tab-content">
+                    <div class="form-container">
+                        <h2><i class="fas fa-chart-bar"></i> التقارير الإدارية</h2>
+                        
+                        <!-- Reports Grid -->
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+                            <div class="report-card">
+                                <div class="report-icon">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                                <div class="report-content">
+                                    <h3>تقرير المستخدمين</h3>
+                                    <p>إحصائيات شاملة عن المستخدمين والحسابات</p>
+                                    <button class="btn btn-primary" onclick="generateReport('users')">
+                                        <i class="fas fa-file-pdf"></i> إنشاء التقرير
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="report-card">
+                                <div class="report-icon">
+                                    <i class="fas fa-shopping-cart"></i>
+                                </div>
+                                <div class="report-content">
+                                    <h3>تقرير الطلبات</h3>
+                                    <p>تحليل مفصل للطلبات والمبيعات</p>
+                                    <button class="btn btn-primary" onclick="generateReport('orders')">
+                                        <i class="fas fa-file-excel"></i> إنشاء التقرير
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="report-card">
+                                <div class="report-icon">
+                                    <i class="fas fa-chart-line"></i>
+                                </div>
+                                <div class="report-content">
+                                    <h3>تقرير الأداء</h3>
+                                    <p>مؤشرات الأداء الرئيسية للنظام</p>
+                                    <button class="btn btn-primary" onclick="generateReport('performance')">
+                                        <i class="fas fa-file-chart"></i> إنشاء التقرير
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="report-card">
+                                <div class="report-icon">
+                                    <i class="fas fa-shield-alt"></i>
+                                </div>
+                                <div class="report-content">
+                                    <h3>تقرير الأمان</h3>
+                                    <p>سجل الأمان والتهديدات المحتملة</p>
+                                    <button class="btn btn-primary" onclick="generateReport('security')">
+                                        <i class="fas fa-file-shield"></i> إنشاء التقرير
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Scheduled Reports -->
+                        <div style="margin-top: 3rem;">
+                            <h3><i class="fas fa-calendar-alt"></i> التقارير المجدولة</h3>
+                            <div class="table-container">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>اسم التقرير</th>
+                                            <th>التكرار</th>
+                                            <th>آخر تشغيل</th>
+                                            <th>التشغيل التالي</th>
+                                            <th>الحالة</th>
+                                            <th>الإجراءات</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>تقرير المستخدمين الشهري</td>
+                                            <td>شهري</td>
+                                            <td>2024-01-01</td>
+                                            <td>2024-02-01</td>
+                                            <td><span class="status-active">نشط</span></td>
+                                            <td>
+                                                <button class="btn-icon" onclick="editScheduledReport(1)">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button class="btn-icon" onclick="runScheduledReport(1)">
+                                                    <i class="fas fa-play"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>تقرير الطلبات الأسبوعي</td>
+                                            <td>أسبوعي</td>
+                                            <td>2024-01-15</td>
+                                            <td>2024-01-22</td>
+                                            <td><span class="status-active">نشط</span></td>
+                                            <td>
+                                                <button class="btn-icon" onclick="editScheduledReport(2)">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button class="btn-icon" onclick="runScheduledReport(2)">
+                                                    <i class="fas fa-play"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Advanced Settings Tab -->
+                <div id="advanced-tab" class="tab-content">
+                    <div class="form-container">
+                        <h2><i class="fas fa-cogs"></i> الإعدادات المتقدمة</h2>
+                        
+                        <!-- System Maintenance -->
+                        <div class="settings-section">
+                            <h3><i class="fas fa-tools"></i> صيانة النظام</h3>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;">
+                                <button class="btn btn-secondary" onclick="clearCache()">
+                                    <i class="fas fa-broom"></i> مسح الذاكرة المؤقتة
+                                </button>
+                                <button class="btn btn-secondary" onclick="optimizeDatabase()">
+                                    <i class="fas fa-database"></i> تحسين قاعدة البيانات
+                                </button>
+                                <button class="btn btn-secondary" onclick="cleanupLogs()">
+                                    <i class="fas fa-file-alt"></i> تنظيف السجلات
+                                </button>
+                                <button class="btn btn-warning" onclick="maintenanceMode()">
+                                    <i class="fas fa-exclamation-triangle"></i> وضع الصيانة
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- System Information -->
+                        <div class="settings-section">
+                            <h3><i class="fas fa-info-circle"></i> معلومات النظام</h3>
+                            <div class="system-info-grid">
+                                <div class="info-item">
+                                    <label>إصدار النظام:</label>
+                                    <span>مسار v1.0.0</span>
+                                </div>
+                                <div class="info-item">
+                                    <label>قاعدة البيانات:</label>
+                                    <span>MySQL 8.0.28</span>
+                                </div>
+                                <div class="info-item">
+                                    <label>مساحة التخزين:</label>
+                                    <span>2.3 GB / 50 GB</span>
+                                </div>
+                                <div class="info-item">
+                                    <label>الذاكرة المستخدمة:</label>
+                                    <span>512 MB / 2 GB</span>
+                                </div>
+                                <div class="info-item">
+                                    <label>وقت التشغيل:</label>
+                                    <span>15 يوم، 8 ساعات</span>
+                                </div>
+                                <div class="info-item">
+                                    <label>آخر نسخة احتياطية:</label>
+                                    <span>2024-01-20 02:00</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Emergency Actions -->
+                        <div class="settings-section">
+                            <h3><i class="fas fa-exclamation-triangle"></i> إجراءات الطوارئ</h3>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;">
+                                <button class="btn btn-danger" onclick="emergencyBackup()">
+                                    <i class="fas fa-save"></i> نسخة احتياطية طارئة
+                                </button>
+                                <button class="btn btn-danger" onclick="resetSystem()">
+                                    <i class="fas fa-undo"></i> إعادة تعيين النظام
+                                </button>
+                                <button class="btn btn-danger" onclick="lockSystem()">
+                                    <i class="fas fa-lock"></i> قفل النظام
+                                </button>
+                                <button class="btn btn-danger" onclick="factoryReset()">
+                                    <i class="fas fa-exclamation-circle"></i> إعادة ضبط المصنع
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <script src="assets/js/components.js"></script>
+    <script src="assets/js/main.js"></script>
+    <script>
+        // Page-specific JavaScript
+        function showTab(tabName) {
+            // Hide all tabs
+            const tabs = document.querySelectorAll('.tab-content');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            
+            // Hide all tab buttons
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            tabBtns.forEach(btn => btn.classList.remove('active'));
+            
+            // Show selected tab
+            document.getElementById(tabName + '-tab').classList.add('active');
+            event.target.classList.add('active');
+        }
+        
+        // Admin Management Functions
+        function addNewAdmin() {
+            showNotification('فتح نموذج إضافة مدير جديد', 'info');
+        }
+        
+        function editAdmin(adminId) {
+            showNotification(`تعديل المدير ${adminId}`, 'info');
+        }
+        
+        function viewAdminActivity(adminId) {
+            showNotification(`عرض نشاط المدير ${adminId}`, 'info');
+        }
+        
+        function suspendAdmin(adminId) {
+            if (confirm('هل تريد تعليق هذا المدير؟')) {
+                showNotification(`تم تعليق المدير ${adminId}`, 'warning');
+            }
+        }
+        
+        function activateAdmin(adminId) {
+            if (confirm('هل تريد تفعيل هذا المدير؟')) {
+                showNotification(`تم تفعيل المدير ${adminId}`, 'success');
+            }
+        }
+        
+        // Role Management Functions
+        function createNewRole() {
+            showNotification('إنشاء دور جديد', 'info');
+        }
+        
+        function editRole(roleId) {
+            showNotification(`تعديل الدور ${roleId}`, 'info');
+        }
+        
+        function duplicateRole(roleId) {
+            showNotification(`نسخ الدور ${roleId}`, 'info');
+        }
+        
+        function deleteRole(roleId) {
+            if (confirm('هل تريد حذف هذا الدور؟ سيتم إلغاء تعيينه من جميع المستخدمين.')) {
+                showNotification(`تم حذف الدور ${roleId}`, 'success');
+            }
+        }
+        
+        // Report Functions
+        function generateReport(reportType) {
+            showLoading();
+            setTimeout(() => {
+                hideLoading();
+                showNotification(`تم إنشاء تقرير ${reportType} بنجاح`, 'success');
+            }, 2000);
+        }
+        
+        function editScheduledReport(reportId) {
+            showNotification(`تعديل التقرير المجدول ${reportId}`, 'info');
+        }
+        
+        function runScheduledReport(reportId) {
+            showLoading();
+            setTimeout(() => {
+                hideLoading();
+                showNotification(`تم تشغيل التقرير ${reportId}`, 'success');
+            }, 1500);
+        }
+        
+        // System Maintenance Functions
+        function clearCache() {
+            showLoading();
+            setTimeout(() => {
+                hideLoading();
+                showNotification('تم مسح الذاكرة المؤقتة', 'success');
+            }, 1000);
+        }
+        
+        function optimizeDatabase() {
+            showLoading();
+            setTimeout(() => {
+                hideLoading();
+                showNotification('تم تحسين قاعدة البيانات', 'success');
+            }, 3000);
+        }
+        
+        function cleanupLogs() {
+            if (confirm('هل تريد حذف السجلات القديمة؟')) {
+                showLoading();
+                setTimeout(() => {
+                    hideLoading();
+                    showNotification('تم تنظيف السجلات', 'success');
+                }, 1500);
+            }
+        }
+        
+        function maintenanceMode() {
+            if (confirm('هل تريد تفعيل وضع الصيانة؟ سيتم منع الوصول للمستخدمين.')) {
+                showNotification('تم تفعيل وضع الصيانة', 'warning');
+            }
+        }
+        
+        // Emergency Functions
+        function emergencyBackup() {
+            if (confirm('هل تريد إنشاء نسخة احتياطية طارئة؟')) {
+                showLoading();
+                setTimeout(() => {
+                    hideLoading();
+                    showNotification('تم إنشاء النسخة الاحتياطية الطارئة', 'success');
+                }, 5000);
+            }
+        }
+        
+        function resetSystem() {
+            const confirmation = prompt('اكتب "إعادة تعيين" للتأكيد:');
+            if (confirmation === 'إعادة تعيين') {
+                showLoading();
+                setTimeout(() => {
+                    hideLoading();
+                    showNotification('تم إعادة تعيين النظام', 'warning');
+                }, 3000);
+            }
+        }
+        
+        function lockSystem() {
+            if (confirm('هل تريد قفل النظام؟ لن يتمكن أي مستخدم من الوصول.')) {
+                showNotification('تم قفل النظام', 'error');
+            }
+        }
+        
+        function factoryReset() {
+            const confirmation = prompt('هذا الإجراء سيحذف جميع البيانات! اكتب "حذف كل شيء" للتأكيد:');
+            if (confirmation === 'حذف كل شيء') {
+                showLoading();
+                setTimeout(() => {
+                    hideLoading();
+                    showNotification('تم إعادة ضبط المصنع', 'error');
+                }, 5000);
+            }
+        }
+    </script>
+    
+    <style>
+        .admin-avatar {
+            width: 40px;
+            height: 40px;
+            background: var(--primary-yellow);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--dark-gray);
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+        
+        .role-super-admin {
+            background: #dc3545;
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+        }
+        
+        .role-admin {
+            background: #007bff;
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+        }
+        
+        .role-support {
+            background: #28a745;
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+        }
+        
+        .permissions-full {
+            color: #dc3545;
+            font-weight: 600;
+        }
+        
+        .permissions-limited {
+            color: #ffc107;
+            font-weight: 600;
+        }
+        
+        .permissions-basic {
+            color: #28a745;
+            font-weight: 600;
+        }
+        
+        .status-active {
+            color: #28a745;
+            font-weight: 600;
+        }
+        
+        .status-suspended {
+            color: #dc3545;
+            font-weight: 600;
+        }
+        
+        .role-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border: 1px solid var(--light-gray);
+        }
+        
+        .role-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .role-header h3 {
+            margin: 0;
+            color: var(--dark-gray);
+        }
+        
+        .role-users {
+            background: var(--light-yellow);
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            color: var(--dark-gray);
+        }
+        
+        .role-description {
+            margin-bottom: 1.5rem;
+        }
+        
+        .role-description p {
+            margin: 0;
+            color: var(--primary-gray);
+        }
+        
+        .role-permissions h4 {
+            margin: 0 0 1rem 0;
+            color: var(--dark-gray);
+            font-size: 1rem;
+        }
+        
+        .permissions-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .permission-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .permission-item i.fa-check {
+            color: #28a745;
+        }
+        
+        .permission-item i.fa-times {
+            color: #dc3545;
+        }
+        
+        .role-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .action-create {
+            background: #007bff;
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+        }
+        
+        .action-update {
+            background: #ffc107;
+            color: #333;
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+        }
+        
+        .action-delete {
+            background: #dc3545;
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+        }
+        
+        .action-login {
+            background: #28a745;
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+        }
+        
+        .result-success {
+            color: #28a745;
+            font-weight: 600;
+        }
+        
+        .result-failed {
+            color: #dc3545;
+            font-weight: 600;
+        }
+        
+        .report-card {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            text-align: center;
+            border: 1px solid var(--light-gray);
+        }
+        
+        .report-icon {
+            font-size: 3rem;
+            color: var(--primary-yellow);
+            margin-bottom: 1rem;
+        }
+        
+        .report-content h3 {
+            margin: 0 0 1rem 0;
+            color: var(--dark-gray);
+        }
+        
+        .report-content p {
+            margin: 0 0 1.5rem 0;
+            color: var(--primary-gray);
+        }
+        
+        .settings-section {
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .settings-section h3 {
+            margin: 0 0 1.5rem 0;
+            color: var(--dark-gray);
+            border-bottom: 2px solid var(--light-gray);
+            padding-bottom: 0.5rem;
+        }
+        
+        .system-info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+        
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: var(--light-gray);
+            border-radius: 6px;
+        }
+        
+        .info-item label {
+            font-weight: 600;
+            color: var(--dark-gray);
+        }
+        
+        .info-item span {
+            color: var(--primary-yellow);
+            font-weight: 600;
+        }
+        
+        @media (max-width: 768px) {
+            .role-actions {
+                flex-direction: column;
+            }
+            
+            .system-info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</body>
+</html>

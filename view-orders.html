@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>عرض الطلبات - مسار</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <div id="header-container"></div>
+    
+    <!-- Sidebar -->
+    <div id="sidebar-container"></div>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="content-wrapper">
+            <div class="page-header">
+                <h1><i class="fas fa-eye"></i> عرض الطلبات</h1>
+                <p>عرض وتتبع جميع الطلبات في النظام</p>
+            </div>
+            
+            <!-- Orders Statistics -->
+            <div class="dashboard-grid">
+                <div class="dashboard-card">
+                    <div class="card-icon">
+                        <i class="fas fa-shopping-cart"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>إجمالي الطلبات</h3>
+                        <span class="card-number">1,247</span>
+                    </div>
+                </div>
+                
+                <div class="dashboard-card">
+                    <div class="card-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>طلبات مكتملة</h3>
+                        <span class="card-number">892</span>
+                    </div>
+                </div>
+                
+                <div class="dashboard-card">
+                    <div class="card-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>قيد التنفيذ</h3>
+                        <span class="card-number">234</span>
+                    </div>
+                </div>
+                
+                <div class="dashboard-card">
+                    <div class="card-icon">
+                        <i class="fas fa-times-circle"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>طلبات ملغية</h3>
+                        <span class="card-number">121</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Advanced Filters -->
+            <div class="form-container">
+                <h2><i class="fas fa-filter"></i> البحث والتصفية المتقدمة</h2>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                    <div class="form-group">
+                        <label>البحث العام</label>
+                        <input type="text" class="form-control" placeholder="رقم الطلب، اسم العميل، أو الوصف..." id="globalSearch">
+                    </div>
+                    <div class="form-group">
+                        <label>حالة الطلب</label>
+                        <select class="form-control" id="statusFilter">
+                            <option value="">جميع الحالات</option>
+                            <option value="pending">في الانتظار</option>
+                            <option value="processing">قيد التنفيذ</option>
+                            <option value="completed">مكتمل</option>
+                            <option value="cancelled">ملغي</option>
+                            <option value="on_hold">معلق</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>نوع الطلب</label>
+                        <select class="form-control" id="typeFilter">
+                            <option value="">جميع الأنواع</option>
+                            <option value="service">خدمة</option>
+                            <option value="product">منتج</option>
+                            <option value="consultation">استشارة</option>
+                            <option value="support">دعم فني</option>
+                            <option value="maintenance">صيانة</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>الأولوية</label>
+                        <select class="form-control" id="priorityFilter">
+                            <option value="">جميع الأولويات</option>
+                            <option value="low">منخفضة</option>
+                            <option value="medium">متوسطة</option>
+                            <option value="high">عالية</option>
+                            <option value="urgent">عاجلة</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>من تاريخ</label>
+                        <input type="date" class="form-control" id="fromDate">
+                    </div>
+                    <div class="form-group">
+                        <label>إلى تاريخ</label>
+                        <input type="date" class="form-control" id="toDate">
+                    </div>
+                </div>
+                <div style="display: flex; gap: 1rem; margin-top: 1rem; flex-wrap: wrap;">
+                    <button class="btn btn-primary" onclick="applyFilters()">
+                        <i class="fas fa-search"></i> تطبيق المرشحات
+                    </button>
+                    <button class="btn btn-secondary" onclick="clearFilters()">
+                        <i class="fas fa-eraser"></i> مسح المرشحات
+                    </button>
+                    <button class="btn btn-secondary" onclick="exportFilteredData()">
+                        <i class="fas fa-file-excel"></i> تصدير النتائج
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Orders Table -->
+            <div class="table-container">
+                <div style="display: flex; justify-content: between; align-items: center; margin-bottom: 1rem;">
+                    <h3><i class="fas fa-list"></i> قائمة الطلبات</h3>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <select class="form-control" style="width: auto;" id="pageSize">
+                            <option value="10">10 عناصر</option>
+                            <option value="25" selected>25 عنصر</option>
+                            <option value="50">50 عنصر</option>
+                            <option value="100">100 عنصر</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>
+                                <input type="checkbox" id="selectAll" onchange="toggleSelectAll()">
+                            </th>
+                            <th>رقم الطلب <i class="fas fa-sort"></i></th>
+                            <th>العميل</th>
+                            <th>نوع الطلب</th>
+                            <th>المبلغ <i class="fas fa-sort"></i></th>
+                            <th>التاريخ <i class="fas fa-sort"></i></th>
+                            <th>الحالة</th>
+                            <th>الأولوية</th>
+                            <th>التقدم</th>
+                            <th>الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><input type="checkbox" class="order-checkbox" value="ORD-2024-001"></td>
+                            <td><strong>#ORD-2024-001</strong></td>
+                            <td>
+                                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <div class="customer-avatar">أ.م</div>
+                                    <div>
+                                        <div>أحمد محمد علي</div>
+                                        <small style="color: var(--primary-gray);">ahmed@example.com</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td><span class="type-service">خدمة</span></td>
+                            <td><strong>2,500 ر.س</strong></td>
+                            <td>2024-01-20</td>
+                            <td><span class="status-processing">قيد التنفيذ</span></td>
+                            <td><span class="priority-high">عالية</span></td>
+                            <td>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 65%;"></div>
+                                    <span class="progress-text">65%</span>
+                                </div>
+                            </td>
+                            <td>
+                                <button class="btn-icon" onclick="viewOrderDetails('ORD-2024-001')" data-tooltip="عرض التفاصيل">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="btn-icon" onclick="editOrder('ORD-2024-001')" data-tooltip="تعديل">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn-icon" onclick="trackOrder('ORD-2024-001')" data-tooltip="تتبع">
+                                    <i class="fas fa-route"></i>
+                                </button>
+                                <button class="btn-icon" onclick="printOrder('ORD-2024-001')" data-tooltip="طباعة">
+                                    <i class="fas fa-print"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" class="order-checkbox" value="ORD-2024-002"></td>
+                            <td><strong>#ORD-2024-002</strong></td>
+                            <td>
+                                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <div class="customer-avatar">س.أ</div>
+                                    <div>
+                                        <div>سارة أحمد حسن</div>
+                                        <small style="color: var(--primary-gray);">sara@example.com</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td><span class="type-product">منتج</span></td>
+                            <td><strong>1,200 ر.س</strong></td>
+                            <td>2024-01-19</td>
+                            <td><span class="status-completed">مكتمل</span></td>
+                            <td><span class="priority-medium">متوسطة</span></td>
+                            <td>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 100%;"></div>
+                                    <span class="progress-text">100%</span>
+                                </div>
+                            </td>
+                            <td>
+                                <button class="btn-icon" onclick="viewOrderDetails('ORD-2024-002')" data-tooltip="عرض التفاصيل">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="btn-icon" onclick="printOrder('ORD-2024-002')" data-tooltip="طباعة">
+                                    <i class="fas fa-print"></i>
+                                </button>
+                                <button class="btn-icon btn-success" onclick="downloadInvoice('ORD-2024-002')" data-tooltip="تحميل الفاتورة">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox" class="order-checkbox" value="ORD-2024-003"></td>
+                            <td><strong>#ORD-2024-003</strong></td>
+                            <td>
+                                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <div class="customer-avatar">م.ع</div>
+                                    <div>
+                                        <div>محمد عبدالله</div>
+                                        <small style="color: var(--primary-gray);">mohamed@example.com</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td><span class="type-consultation">استشارة</span></td>
+                            <td><strong>800 ر.س</strong></td>
+                            <td>2024-01-18</td>
+                            <td><span class="status-pending">في الانتظار</span></td>
+                            <td><span class="priority-low">منخفضة</span></td>
+                            <td>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 25%;"></div>
+                                    <span class="progress-text">25%</span>
+                                </div>
+                            </td>
+                            <td>
+                                <button class="btn-icon" onclick="viewOrderDetails('ORD-2024-003')" data-tooltip="عرض التفاصيل">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="btn-icon" onclick="editOrder('ORD-2024-003')" data-tooltip="تعديل">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn-icon btn-success" onclick="startOrder('ORD-2024-003')" data-tooltip="بدء التنفيذ">
+                                    <i class="fas fa-play"></i>
+                                </button>
+                                <button class="btn-icon btn-danger" onclick="cancelOrder('ORD-2024-003')" data-tooltip="إلغاء">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <!-- Bulk Actions -->
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem; padding: 1rem; background: var(--light-gray); border-radius: 8px;">
+                    <div>
+                        <span id="selectedCount">0</span> عنصر محدد
+                    </div>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <button class="btn btn-secondary" onclick="bulkExport()" disabled id="bulkExportBtn">
+                            <i class="fas fa-file-excel"></i> تصدير المحدد
+                        </button>
+                        <button class="btn btn-secondary" onclick="bulkPrint()" disabled id="bulkPrintBtn">
+                            <i class="fas fa-print"></i> طباعة المحدد
+                        </button>
+                        <button class="btn btn-primary" onclick="bulkUpdateStatus()" disabled id="bulkUpdateBtn">
+                            <i class="fas fa-edit"></i> تحديث الحالة
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Pagination -->
+                <div class="pagination-container" style="display: flex; justify-content: center; align-items: center; gap: 1rem; margin-top: 2rem;">
+                    <button class="btn btn-secondary" onclick="previousPage()">
+                        <i class="fas fa-chevron-right"></i> السابق
+                    </button>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <button class="btn btn-primary">1</button>
+                        <button class="btn btn-secondary">2</button>
+                        <button class="btn btn-secondary">3</button>
+                        <span>...</span>
+                        <button class="btn btn-secondary">10</button>
+                    </div>
+                    <button class="btn btn-secondary" onclick="nextPage()">
+                        التالي <i class="fas fa-chevron-left"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <script src="assets/js/components.js"></script>
+    <script src="assets/js/main.js"></script>
+    <script>
+        // Page-specific JavaScript
+        let selectedOrders = [];
+        
+        function toggleSelectAll() {
+            const selectAll = document.getElementById('selectAll');
+            const checkboxes = document.querySelectorAll('.order-checkbox');
+            
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = selectAll.checked;
+            });
+            
+            updateSelectedCount();
+        }
+        
+        function updateSelectedCount() {
+            const checkboxes = document.querySelectorAll('.order-checkbox:checked');
+            const count = checkboxes.length;
+            
+            document.getElementById('selectedCount').textContent = count;
+            
+            // Enable/disable bulk action buttons
+            const bulkButtons = ['bulkExportBtn', 'bulkPrintBtn', 'bulkUpdateBtn'];
+            bulkButtons.forEach(btnId => {
+                document.getElementById(btnId).disabled = count === 0;
+            });
+            
+            selectedOrders = Array.from(checkboxes).map(cb => cb.value);
+        }
+        
+        // Add event listeners to checkboxes
+        document.addEventListener('DOMContentLoaded', function() {
+            const checkboxes = document.querySelectorAll('.order-checkbox');
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', updateSelectedCount);
+            });
+        });
+        
+        function viewOrderDetails(orderId) {
+            showNotification(`عرض تفاصيل الطلب ${orderId}`, 'info');
+        }
+        
+        function editOrder(orderId) {
+            showNotification(`تعديل الطلب ${orderId}`, 'info');
+        }
+        
+        function trackOrder(orderId) {
+            showNotification(`تتبع الطلب ${orderId}`, 'info');
+        }
+        
+        function printOrder(orderId) {
+            showNotification(`طباعة الطلب ${orderId}`, 'info');
+        }
+        
+        function downloadInvoice(orderId) {
+            showLoading();
+            setTimeout(() => {
+                hideLoading();
+                showNotification(`تم تحميل فاتورة الطلب ${orderId}`, 'success');
+            }, 1500);
+        }
+        
+        function startOrder(orderId) {
+            if (confirm(`هل تريد بدء تنفيذ الطلب ${orderId}؟`)) {
+                showLoading();
+                setTimeout(() => {
+                    hideLoading();
+                    showNotification(`تم بدء تنفيذ الطلب ${orderId}`, 'success');
+                }, 1000);
+            }
+        }
+        
+        function cancelOrder(orderId) {
+            const reason = prompt('يرجى إدخال سبب الإلغاء:');
+            if (reason) {
+                showLoading();
+                setTimeout(() => {
+                    hideLoading();
+                    showNotification(`تم إلغاء الطلب ${orderId}`, 'success');
+                }, 1500);
+            }
+        }
+        
+        function applyFilters() {
+            showLoading();
+            setTimeout(() => {
+                hideLoading();
+                showNotification('تم تطبيق المرشحات', 'success');
+            }, 1000);
+        }
+        
+        function clearFilters() {
+            document.getElementById('globalSearch').value = '';
+            document.getElementById('statusFilter').value = '';
+            document.getElementById('typeFilter').value = '';
+            document.getElementById('priorityFilter').value = '';
+            document.getElementById('fromDate').value = '';
+            document.getElementById('toDate').value = '';
+            showNotification('تم مسح جميع المرشحات', 'info');
+        }
+        
+        function exportFilteredData() {
+            exportData('excel');
+        }
+        
+        function bulkExport() {
+            if (selectedOrders.length > 0) {
+                showLoading();
+                setTimeout(() => {
+                    hideLoading();
+                    showNotification(`تم تصدير ${selectedOrders.length} طلب`, 'success');
+                }, 1500);
+            }
+        }
+        
+        function bulkPrint() {
+            if (selectedOrders.length > 0) {
+                showNotification(`طباعة ${selectedOrders.length} طلب`, 'info');
+            }
+        }
+        
+        function bulkUpdateStatus() {
+            if (selectedOrders.length > 0) {
+                const newStatus = prompt('أدخل الحالة الجديدة:');
+                if (newStatus) {
+                    showLoading();
+                    setTimeout(() => {
+                        hideLoading();
+                        showNotification(`تم تحديث حالة ${selectedOrders.length} طلب`, 'success');
+                    }, 1500);
+                }
+            }
+        }
+        
+        function previousPage() {
+            showNotification('الانتقال للصفحة السابقة', 'info');
+        }
+        
+        function nextPage() {
+            showNotification('الانتقال للصفحة التالية', 'info');
+        }
+    </script>
+    
+    <style>
+        .customer-avatar {
+            width: 35px;
+            height: 35px;
+            background: var(--primary-yellow);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--dark-gray);
+            font-weight: bold;
+            font-size: 0.8rem;
+        }
+        
+        .type-service {
+            background: #007bff;
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+        }
+        
+        .type-product {
+            background: #28a745;
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+        }
+        
+        .type-consultation {
+            background: #ffc107;
+            color: #333;
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+        }
+        
+        .status-pending {
+            color: #ffc107;
+            font-weight: 600;
+        }
+        
+        .status-processing {
+            color: #007bff;
+            font-weight: 600;
+        }
+        
+        .status-completed {
+            color: #28a745;
+            font-weight: 600;
+        }
+        
+        .status-cancelled {
+            color: #dc3545;
+            font-weight: 600;
+        }
+        
+        .priority-high {
+            color: #dc3545;
+            font-weight: 600;
+        }
+        
+        .priority-medium {
+            color: #ffc107;
+            font-weight: 600;
+        }
+        
+        .priority-low {
+            color: #28a745;
+            font-weight: 600;
+        }
+        
+        .progress-bar {
+            position: relative;
+            width: 80px;
+            height: 20px;
+            background: var(--light-gray);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-yellow), var(--secondary-yellow));
+            transition: width 0.3s ease;
+        }
+        
+        .progress-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--dark-gray);
+        }
+        
+        .btn-icon {
+            background: none;
+            border: none;
+            padding: 0.5rem;
+            margin: 0 0.25rem;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--primary-gray);
+        }
+        
+        .btn-icon:hover {
+            background: var(--light-yellow);
+            color: var(--dark-gray);
+        }
+        
+        .btn-success {
+            color: #28a745;
+        }
+        
+        .btn-success:hover {
+            background: #28a745;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #dc3545;
+            color: var(--white);
+        }
+        
+        .table th {
+            cursor: pointer;
+            user-select: none;
+        }
+        
+        .table th:hover {
+            background: var(--light-yellow);
+        }
+        
+        .table th i {
+            margin-right: 0.5rem;
+            opacity: 0.5;
+        }
+        
+        @media (max-width: 768px) {
+            .table-container {
+                overflow-x: auto;
+            }
+            
+            .progress-bar {
+                width: 60px;
+            }
+        }
+    </style>
+</body>
+</html>

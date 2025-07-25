@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>التعديل على التطبيق - مسار</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <div id="header-container"></div>
+    
+    <!-- Sidebar -->
+    <div id="sidebar-container"></div>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="content-wrapper">
+            <div class="page-header">
+                <h1><i class="fas fa-cogs"></i> التعديل على التطبيق</h1>
+                <p>إدارة إعدادات وتكوين التطبيق</p>
+            </div>
+            
+            <!-- Settings Tabs -->
+            <div class="tabs-container">
+                <div class="tabs-nav">
+                    <button class="tab-btn active" onclick="showTab('general')">الإعدادات العامة</button>
+                    <button class="tab-btn" onclick="showTab('appearance')">المظهر والواجهة</button>
+                    <button class="tab-btn" onclick="showTab('security')">الأمان</button>
+                    <button class="tab-btn" onclick="showTab('notifications')">الإشعارات</button>
+                    <button class="tab-btn" onclick="showTab('backup')">النسخ الاحتياطي</button>
+                    <button class="tab-btn" onclick="showTab('system')">النظام</button>
+                </div>
+                
+                <!-- General Settings Tab -->
+                <div id="general-tab" class="tab-content active">
+                    <div class="form-container">
+                        <h2><i class="fas fa-info-circle"></i> معلومات التطبيق</h2>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem;">
+                            <div class="form-group">
+                                <label>اسم التطبيق</label>
+                                <input type="text" class="form-control" value="مسار" id="appName">
+                            </div>
+                            <div class="form-group">
+                                <label>إصدار التطبيق</label>
+                                <input type="text" class="form-control" value="1.0.0" id="appVersion">
+                            </div>
+                            <div class="form-group">
+                                <label>وصف التطبيق</label>
+                                <textarea class="form-control" rows="3" id="appDescription">نظام إدارة شامل للعملاء والطلبات</textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>البريد الإلكتروني للدعم</label>
+                                <input type="email" class="form-control" value="support@masar.com" id="supportEmail">
+                            </div>
+                            <div class="form-group">
+                                <label>رقم الهاتف للدعم</label>
+                                <input type="tel" class="form-control" value="+966501234567" id="supportPhone">
+                            </div>
+                            <div class="form-group">
+                                <label>المنطقة الزمنية</label>
+                                <select class="form-control" id="timezone">
+                                    <option value="Asia/Riyadh" selected>الرياض (GMT+3)</option>
+                                    <option value="Asia/Dubai">دبي (GMT+4)</option>
+                                    <option value="Asia/Kuwait">الكويت (GMT+3)</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <h3><i class="fas fa-language"></i> إعدادات اللغة</h3>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;">
+                            <div class="form-group">
+                                <label>اللغة الافتراضية</label>
+                                <select class="form-control" id="defaultLanguage">
+                                    <option value="ar" selected>العربية</option>
+                                    <option value="en">English</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>العملة الافتراضية</label>
+                                <select class="form-control" id="defaultCurrency">
+                                    <option value="SAR" selected>ريال سعودي</option>
+                                    <option value="AED">درهم إماراتي</option>
+                                    <option value="USD">دولار أمريكي</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Appearance Settings Tab -->
+                <div id="appearance-tab" class="tab-content">
+                    <div class="form-container">
+                        <h2><i class="fas fa-palette"></i> إعدادات المظهر</h2>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem;">
+                            <div class="form-group">
+                                <label>شعار التطبيق</label>
+                                <div class="file-upload-area">
+                                    <input type="file" id="logoUpload" accept="image/*" style="display: none;">
+                                    <div onclick="document.getElementById('logoUpload').click()" style="cursor: pointer; padding: 2rem; border: 2px dashed var(--primary-gray); border-radius: 8px; text-align: center;">
+                                        <i class="fas fa-cloud-upload-alt" style="font-size: 2rem; color: var(--primary-gray); margin-bottom: 1rem;"></i>
+                                        <p>اضغط لرفع الشعار</p>
+                                        <small>PNG, JPG, SVG (الحد الأقصى: 2MB)</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>اللون الأساسي</label>
+                                <div style="display: flex; gap: 1rem; align-items: center;">
+                                    <input type="color" value="#FFD700" id="primaryColor" style="width: 50px; height: 40px; border: none; border-radius: 4px;">
+                                    <input type="text" class="form-control" value="#FFD700" id="primaryColorText" style="flex: 1;">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>اللون الثانوي</label>
+                                <div style="display: flex; gap: 1rem; align-items: center;">
+                                    <input type="color" value="#6C757D" id="secondaryColor" style="width: 50px; height: 40px; border: none; border-radius: 4px;">
+                                    <input type="text" class="form-control" value="#6C757D" id="secondaryColorText" style="flex: 1;">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>نمط الواجهة</label>
+                                <select class="form-control" id="themeMode">
+                                    <option value="light" selected>فاتح</option>
+                                    <option value="dark">داكن</option>
+                                    <option value="auto">تلقائي</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>حجم الخط</label>
+                                <select class="form-control" id="fontSize">
+                                    <option value="small">صغير</option>
+                                    <option value="medium" selected>متوسط</option>
+                                    <option value="large">كبير</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>عرض الشريط الجانبي</label>
+                                <select class="form-control" id="sidebarWidth">
+                                    <option value="compact">مضغوط</option>
+                                    <option value="normal" selected>عادي</option>
+                                    <option value="wide">واسع</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="enableAnimations" checked>
+                                تفعيل الحركات والانتقالات
+                            </label>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="enableSounds" checked>
+                                تفعيل الأصوات
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Security Settings Tab -->
+                <div id="security-tab" class="tab-content">
+                    <div class="form-container">
+                        <h2><i class="fas fa-shield-alt"></i> إعدادات الأمان</h2>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem;">
+                            <div class="form-group">
+                                <label>مدة انتهاء الجلسة (بالدقائق)</label>
+                                <input type="number" class="form-control" value="30" id="sessionTimeout">
+                            </div>
+                            <div class="form-group">
+                                <label>الحد الأقصى لمحاولات تسجيل الدخول</label>
+                                <input type="number" class="form-control" value="5" id="maxLoginAttempts">
+                            </div>
+                            <div class="form-group">
+                                <label>الحد الأدنى لطول كلمة المرور</label>
+                                <input type="number" class="form-control" value="8" id="minPasswordLength">
+                            </div>
+                            <div class="form-group">
+                                <label>مدة صلاحية كلمة المرور (بالأيام)</label>
+                                <input type="number" class="form-control" value="90" id="passwordExpiry">
+                            </div>
+                        </div>
+                        
+                        <h3><i class="fas fa-key"></i> متطلبات كلمة المرور</h3>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="requireUppercase" checked>
+                                يجب أن تحتوي على أحرف كبيرة
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="requireLowercase" checked>
+                                يجب أن تحتوي على أحرف صغيرة
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="requireNumbers" checked>
+                                يجب أن تحتوي على أرقام
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="requireSpecialChars" checked>
+                                يجب أن تحتوي على رموز خاصة
+                            </label>
+                        </div>
+                        
+                        <h3><i class="fas fa-user-shield"></i> المصادقة الثنائية</h3>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="enable2FA">
+                                تفعيل المصادقة الثنائية
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="force2FA">
+                                إجبار جميع المستخدمين على استخدام المصادقة الثنائية
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Notifications Settings Tab -->
+                <div id="notifications-tab" class="tab-content">
+                    <div class="form-container">
+                        <h2><i class="fas fa-bell"></i> إعدادات الإشعارات</h2>
+                        
+                        <h3><i class="fas fa-envelope"></i> إشعارات البريد الإلكتروني</h3>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem;">
+                            <div class="form-group">
+                                <label>خادم SMTP</label>
+                                <input type="text" class="form-control" placeholder="smtp.gmail.com" id="smtpServer">
+                            </div>
+                            <div class="form-group">
+                                <label>منفذ SMTP</label>
+                                <input type="number" class="form-control" value="587" id="smtpPort">
+                            </div>
+                            <div class="form-group">
+                                <label>اسم المستخدم</label>
+                                <input type="text" class="form-control" id="smtpUsername">
+                            </div>
+                            <div class="form-group">
+                                <label>كلمة المرور</label>
+                                <input type="password" class="form-control" id="smtpPassword">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="enableSSL" checked>
+                                استخدام SSL/TLS
+                            </label>
+                        </div>
+                        
+                        <h3><i class="fas fa-mobile-alt"></i> إشعارات الهاتف المحمول</h3>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="enablePushNotifications" checked>
+                                تفعيل الإشعارات الفورية
+                            </label>
+                        </div>
+                        
+                        <h3><i class="fas fa-cog"></i> أنواع الإشعارات</h3>
+                        <div class="notification-types">
+                            <div class="form-group">
+                                <label>
+                                    <input type="checkbox" id="notifyNewOrders" checked>
+                                    طلبات جديدة
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label>
+                                    <input type="checkbox" id="notifyOrderUpdates" checked>
+                                    تحديثات الطلبات
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label>
+                                    <input type="checkbox" id="notifyNewUsers" checked>
+                                    مستخدمين جدد
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label>
+                                    <input type="checkbox" id="notifySystemAlerts" checked>
+                                    تنبيهات النظام
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Backup Settings Tab -->
+                <div id="backup-tab" class="tab-content">
+                    <div class="form-container">
+                        <h2><i class="fas fa-database"></i> النسخ الاحتياطي</h2>
+                        
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem;">
+                            <div class="form-group">
+                                <label>تكرار النسخ الاحتياطي</label>
+                                <select class="form-control" id="backupFrequency">
+                                    <option value="daily" selected>يومي</option>
+                                    <option value="weekly">أسبوعي</option>
+                                    <option value="monthly">شهري</option>
+                                    <option value="manual">يدوي فقط</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>وقت النسخ الاحتياطي</label>
+                                <input type="time" class="form-control" value="02:00" id="backupTime">
+                            </div>
+                            <div class="form-group">
+                                <label>عدد النسخ المحفوظة</label>
+                                <input type="number" class="form-control" value="7" id="backupRetention">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="enableAutoBackup" checked>
+                                تفعيل النسخ الاحتياطي التلقائي
+                            </label>
+                        </div>
+                        
+                        <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                            <button class="btn btn-primary" onclick="createBackup()">
+                                <i class="fas fa-save"></i> إنشاء نسخة احتياطية الآن
+                            </button>
+                            <button class="btn btn-secondary" onclick="restoreBackup()">
+                                <i class="fas fa-upload"></i> استعادة من نسخة احتياطية
+                            </button>
+                            <button class="btn btn-secondary" onclick="downloadBackup()">
+                                <i class="fas fa-download"></i> تحميل آخر نسخة
+                            </button>
+                        </div>
+                        
+                        <div class="backup-history" style="margin-top: 2rem;">
+                            <h3><i class="fas fa-history"></i> سجل النسخ الاحتياطية</h3>
+                            <div class="table-container">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>التاريخ</th>
+                                            <th>الحجم</th>
+                                            <th>النوع</th>
+                                            <th>الحالة</th>
+                                            <th>الإجراءات</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>2024-01-20 02:00</td>
+                                            <td>45.2 MB</td>
+                                            <td>تلقائي</td>
+                                            <td><span class="status-completed">مكتمل</span></td>
+                                            <td>
+                                                <button class="btn-icon" onclick="downloadSpecificBackup('backup_20240120')">
+                                                    <i class="fas fa-download"></i>
+                                                </button>
+                                                <button class="btn-icon" onclick="restoreSpecificBackup('backup_20240120')">
+                                                    <i class="fas fa-undo"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>2024-01-19 02:00</td>
+                                            <td>44.8 MB</td>
+                                            <td>تلقائي</td>
+                                            <td><span class="status-completed">مكتمل</span></td>
+                                            <td>
+                                                <button class="btn-icon" onclick="downloadSpecificBackup('backup_20240119')">
+                                                    <i class="fas fa-download"></i>
+                                                </button>
+                                                <button class="btn-icon" onclick="restoreSpecificBackup('backup_20240119')">
+                                                    <i class="fas fa-undo"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- System Settings Tab -->
+                <div id="system-tab" class="tab-content">
+                    <div class="form-container">
+                        <h2><i class="fas fa-server"></i> إعدادات النظام</h2>
+                        
+                        <h3><i class="fas fa-chart-line"></i> الأداء</h3>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem;">
+                            <div class="form-group">
+                                <label>حجم ذاكرة التخزين المؤقت (MB)</label>
+                                <input type="number" class="form-control" value="512" id="cacheSize">
+                            </div>
+                            <div class="form-group">
+                                <label>مدة انتهاء صلاحية الكاش (بالساعات)</label>
+                                <input type="number" class="form-control" value="24" id="cacheExpiry">
+                            </div>
+                            <div class="form-group">
+                                <label>الحد الأقصى لحجم الملف المرفوع (MB)</label>
+                                <input type="number" class="form-control" value="10" id="maxFileSize">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="enableCaching" checked>
+                                تفعيل التخزين المؤقت
+                            </label>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" id="enableCompression" checked>
+                                تفعيل ضغط البيانات
+                            </label>
+                        </div>
+                        
+                        <h3><i class="fas fa-file-alt"></i> السجلات</h3>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem;">
+                            <div class="form-group">
+                                <label>مستوى السجلات</label>
+                                <select class="form-control" id="logLevel">
+                                    <option value="error">أخطاء فقط</option>
+                                    <option value="warning">تحذيرات وأخطاء</option>
+                                    <option value="info" selected>معلومات عامة</option>
+                                    <option value="debug">تفصيلي (للمطورين)</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>مدة الاحتفاظ بالسجلات (بالأيام)</label>
+                                <input type="number" class="form-control" value="30" id="logRetention">
+                            </div>
+                        </div>
+                        
+                        <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                            <button class="btn btn-secondary" onclick="viewLogs()">
+                                <i class="fas fa-eye"></i> عرض السجلات
+                            </button>
+                            <button class="btn btn-secondary" onclick="downloadLogs()">
+                                <i class="fas fa-download"></i> تحميل السجلات
+                            </button>
+                            <button class="btn btn-danger" onclick="clearLogs()">
+                                <i class="fas fa-trash"></i> مسح السجلات
+                            </button>
+                        </div>
+                        
+                        <h3><i class="fas fa-info-circle"></i> معلومات النظام</h3>
+                        <div class="system-info">
+                            <div class="info-card">
+                                <h4>إصدار PHP</h4>
+                                <p>8.1.0</p>
+                            </div>
+                            <div class="info-card">
+                                <h4>إصدار قاعدة البيانات</h4>
+                                <p>MySQL 8.0.28</p>
+                            </div>
+                            <div class="info-card">
+                                <h4>مساحة القرص المستخدمة</h4>
+                                <p>2.3 GB / 50 GB</p>
+                            </div>
+                            <div class="info-card">
+                                <h4>استخدام الذاكرة</h4>
+                                <p>512 MB / 2 GB</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Save Button -->
+            <div style="position: fixed; bottom: 2rem; left: 2rem; right: 2rem; background: white; padding: 1rem; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); display: flex; justify-content: center; gap: 1rem; z-index: 1000;">
+                <button class="btn btn-primary" onclick="saveSettings()">
+                    <i class="fas fa-save"></i> حفظ جميع الإعدادات
+                </button>
+                <button class="btn btn-secondary" onclick="resetSettings()">
+                    <i class="fas fa-undo"></i> إعادة تعيين
+                </button>
+                <button class="btn btn-secondary" onclick="exportSettings()">
+                    <i class="fas fa-file-export"></i> تصدير الإعدادات
+                </button>
+                <button class="btn btn-secondary" onclick="importSettings()">
+                    <i class="fas fa-file-import"></i> استيراد الإعدادات
+                </button>
+            </div>
+        </div>
+    </main>
+    
+    <script src="assets/js/components.js"></script>
+    <script src="assets/js/main.js"></script>
+    <script>
+        // Page-specific JavaScript
+        function showTab(tabName) {
+            // Hide all tabs
+            const tabs = document.querySelectorAll('.tab-content');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            
+            // Hide all tab buttons
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            tabBtns.forEach(btn => btn.classList.remove('active'));
+            
+            // Show selected tab
+            document.getElementById(tabName + '-tab').classList.add('active');
+            event.target.classList.add('active');
+        }
+        
+        function saveSettings() {
+            showLoading();
+            setTimeout(() => {
+                hideLoading();
+                showNotification('تم حفظ جميع الإعدادات بنجاح', 'success');
+            }, 2000);
+        }
+        
+        function resetSettings() {
+            if (confirm('هل تريد إعادة تعيين جميع الإعدادات إلى القيم الافتراضية؟')) {
+                showLoading();
+                setTimeout(() => {
+                    hideLoading();
+                    showNotification('تم إعادة تعيين الإعدادات', 'info');
+                    location.reload();
+                }, 1500);
+            }
+        }
+        
+        function exportSettings() {
+            showLoading();
+            setTimeout(() => {
+                hideLoading();
+                showNotification('تم تصدير الإعدادات', 'success');
+            }, 1000);
+        }
+        
+        function importSettings() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    showLoading();
+                    setTimeout(() => {
+                        hideLoading();
+                        showNotification('تم استيراد الإعدادات بنجاح', 'success');
+                    }, 1500);
+                }
+            };
+            input.click();
+        }
+        
+        function createBackup() {
+            showLoading();
+            setTimeout(() => {
+                hideLoading();
+                showNotification('تم إنشاء النسخة الاحتياطية بنجاح', 'success');
+            }, 3000);
+        }
+        
+        function restoreBackup() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.sql,.zip';
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    if (confirm('هل تريد استعادة النظام من هذه النسخة الاحتياطية؟ سيتم فقدان البيانات الحالية.')) {
+                        showLoading();
+                        setTimeout(() => {
+                            hideLoading();
+                            showNotification('تم استعادة النسخة الاحتياطية بنجاح', 'success');
+                        }, 5000);
+                    }
+                }
+            };
+            input.click();
+        }
+        
+        function downloadBackup() {
+            showLoading();
+            setTimeout(() => {
+                hideLoading();
+                showNotification('تم تحميل النسخة الاحتياطية', 'success');
+            }, 2000);
+        }
+        
+        function downloadSpecificBackup(backupId) {
+            showLoading();
+            setTimeout(() => {
+                hideLoading();
+                showNotification(`تم تحميل النسخة الاحتياطية ${backupId}`, 'success');
+            }, 1500);
+        }
+        
+        function restoreSpecificBackup(backupId) {
+            if (confirm(`هل تريد استعادة النظام من النسخة ${backupId}؟`)) {
+                showLoading();
+                setTimeout(() => {
+                    hideLoading();
+                    showNotification(`تم استعادة النسخة ${backupId} بنجاح`, 'success');
+                }, 4000);
+            }
+        }
+        
+        function viewLogs() {
+            showNotification('عرض السجلات', 'info');
+        }
+        
+        function downloadLogs() {
+            showLoading();
+            setTimeout(() => {
+                hideLoading();
+                showNotification('تم تحميل السجلات', 'success');
+            }, 1000);
+        }
+        
+        function clearLogs() {
+            if (confirm('هل تريد مسح جميع السجلات؟')) {
+                showLoading();
+                setTimeout(() => {
+                    hideLoading();
+                    showNotification('تم مسح السجلات', 'success');
+                }, 1000);
+            }
+        }
+        
+        // Color picker sync
+        document.getElementById('primaryColor').addEventListener('change', function() {
+            document.getElementById('primaryColorText').value = this.value;
+        });
+        
+        document.getElementById('primaryColorText').addEventListener('change', function() {
+            document.getElementById('primaryColor').value = this.value;
+        });
+        
+        document.getElementById('secondaryColor').addEventListener('change', function() {
+            document.getElementById('secondaryColorText').value = this.value;
+        });
+        
+        document.getElementById('secondaryColorText').addEventListener('change', function() {
+            document.getElementById('secondaryColor').value = this.value;
+        });
+    </script>
+    
+    <style>
+        .tabs-container {
+            margin-bottom: 2rem;
+        }
+        
+        .tabs-nav {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid var(--light-gray);
+            overflow-x: auto;
+        }
+        
+        .tab-btn {
+            padding: 1rem 1.5rem;
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--primary-gray);
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+        
+        .tab-btn:hover {
+            color: var(--dark-gray);
+            background: var(--light-yellow);
+        }
+        
+        .tab-btn.active {
+            color: var(--dark-gray);
+            border-bottom-color: var(--primary-yellow);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .notification-types {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+        
+        .system-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .info-card {
+            background: var(--light-gray);
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .info-card h4 {
+            margin: 0 0 0.5rem 0;
+            color: var(--dark-gray);
+            font-size: 0.9rem;
+        }
+        
+        .info-card p {
+            margin: 0;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--primary-yellow);
+        }
+        
+        .file-upload-area {
+            margin-top: 0.5rem;
+        }
+        
+        @media (max-width: 768px) {
+            .tabs-nav {
+                flex-wrap: nowrap;
+                overflow-x: auto;
+            }
+            
+            .tab-btn {
+                padding: 0.75rem 1rem;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</body>
+</html>

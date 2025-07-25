@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مراجعة الطلبات - مسار</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <div id="header-container"></div>
+    
+    <!-- Sidebar -->
+    <div id="sidebar-container"></div>
+    
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="content-wrapper">
+            <div class="page-header">
+                <h1><i class="fas fa-clipboard-check"></i> مراجعة الطلبات</h1>
+                <p>مراجعة واعتماد الطلبات المقدمة من العملاء</p>
+            </div>
+            
+            <!-- Statistics Cards -->
+            <div class="dashboard-grid">
+                <div class="dashboard-card">
+                    <div class="card-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>طلبات في الانتظار</h3>
+                        <span class="card-number">24</span>
+                    </div>
+                </div>
+                
+                <div class="dashboard-card">
+                    <div class="card-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>طلبات معتمدة</h3>
+                        <span class="card-number">156</span>
+                    </div>
+                </div>
+                
+                <div class="dashboard-card">
+                    <div class="card-icon">
+                        <i class="fas fa-times-circle"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>طلبات مرفوضة</h3>
+                        <span class="card-number">12</span>
+                    </div>
+                </div>
+                
+                <div class="dashboard-card">
+                    <div class="card-icon">
+                        <i class="fas fa-calendar-day"></i>
+                    </div>
+                    <div class="card-content">
+                        <h3>طلبات اليوم</h3>
+                        <span class="card-number">8</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Filter Section -->
+            <div class="form-container">
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr auto; gap: 1rem; align-items: end;">
+                    <div class="form-group">
+                        <label>البحث</label>
+                        <input type="text" class="form-control" placeholder="رقم الطلب أو اسم العميل..." id="searchInput">
+                    </div>
+                    <div class="form-group">
+                        <label>حالة الطلب</label>
+                        <select class="form-control" id="statusFilter">
+                            <option value="">جميع الحالات</option>
+                            <option value="pending">في الانتظار</option>
+                            <option value="approved">معتمد</option>
+                            <option value="rejected">مرفوض</option>
+                            <option value="in_review">قيد المراجعة</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>نوع الطلب</label>
+                        <select class="form-control" id="typeFilter">
+                            <option value="">جميع الأنواع</option>
+                            <option value="service">خدمة</option>
+                            <option value="product">منتج</option>
+                            <option value="consultation">استشارة</option>
+                            <option value="support">دعم فني</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>التاريخ</label>
+                        <input type="date" class="form-control" id="dateFilter">
+                    </div>
+                    <button class="btn btn-primary" onclick="filterOrders()">
+                        <i class="fas fa-search"></i> بحث
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Orders Table -->
+            <div class="table-container">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>رقم الطلب</th>
+                            <th>العميل</th>
+                            <th>نوع الطلب</th>
+                            <th>التاريخ</th>
+                            <th>المبلغ</th>
+                            <th>الحالة</th>
+                            <th>الأولوية</th>
+                            <th>الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>#ORD-2024-001</strong></td>
+                            <td>
+                                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <div style="width: 30px; height: 30px; background: var(--primary-yellow); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--dark-gray); font-weight: bold; font-size: 0.8rem;">
+                                        أ.م
+                                    </div>
+                                    <span>أحمد محمد</span>
+                                </div>
+                            </td>
+                            <td><span class="type-service">خدمة</span></td>
+                            <td>2024-01-20</td>
+                            <td>2,500 ر.س</td>
+                            <td><span class="status-pending">في الانتظار</span></td>
+                            <td><span class="priority-high">عالية</span></td>
+                            <td>
+                                <button class="btn-icon btn-success" onclick="approveOrder('ORD-2024-001')" data-tooltip="اعتماد">
+                                    <i class="fas fa-check"></i>
+                                </button>
+                                <button class="btn-icon btn-danger" onclick="rejectOrder('ORD-2024-001')" data-tooltip="رفض">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                                <button class="btn-icon" onclick="viewOrder('ORD-2024-001')" data-tooltip="عرض التفاصيل">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>#ORD-2024-002</strong></td>
+                            <td>
+                                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <div style="width: 30px; height: 30px; background: var(--primary-yellow); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--dark-gray); font-weight: bold; font-size: 0.8rem;">
+                                        س.أ
+                                    </div>
+                                    <span>سارة أحمد</span>
+                                </div>
+                            </td>
+                            <td><span class="type-product">منتج</span></td>
+                            <td>2024-01-19</td>
+                            <td>1,200 ر.س</td>
+                            <td><span class="status-in-review">قيد المراجعة</span></td>
+                            <td><span class="priority-medium">متوسطة</span></td>
+                            <td>
+                                <button class="btn-icon btn-success" onclick="approveOrder('ORD-2024-002')" data-tooltip="اعتماد">
+                                    <i class="fas fa-check"></i>
+                                </button>
+                                <button class="btn-icon btn-danger" onclick="rejectOrder('ORD-2024-002')" data-tooltip="رفض">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                                <button class="btn-icon" onclick="viewOrder('ORD-2024-002')" data-tooltip="عرض التفاصيل">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>#ORD-2024-003</strong></td>
+                            <td>
+                                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <div style="width: 30px; height: 30px; background: var(--primary-yellow); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--dark-gray); font-weight: bold; font-size: 0.8rem;">
+                                        م.ع
+                                    </div>
+                                    <span>محمد عبدالله</span>
+                                </div>
+                            </td>
+                            <td><span class="type-consultation">استشارة</span></td>
+                            <td>2024-01-18</td>
+                            <td>800 ر.س</td>
+                            <td><span class="status-approved">معتمد</span></td>
+                            <td><span class="priority-low">منخفضة</span></td>
+                            <td>
+                                <button class="btn-icon" onclick="viewOrder('ORD-2024-003')" data-tooltip="عرض التفاصيل">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="btn-icon" onclick="printOrder('ORD-2024-003')" data-tooltip="طباعة">
+                                    <i class="fas fa-print"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Quick Actions -->
+            <div class="form-container">
+                <h3><i class="fas fa-bolt"></i> إجراءات سريعة</h3>
+                <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 1rem;">
+                    <button class="btn btn-primary" onclick="approveAllPending()">
+                        <i class="fas fa-check-double"></i> اعتماد جميع الطلبات المعلقة
+                    </button>
+                    <button class="btn btn-secondary" onclick="exportOrders()">
+                        <i class="fas fa-file-excel"></i> تصدير التقرير
+                    </button>
+                    <button class="btn btn-secondary" onclick="sendNotifications()">
+                        <i class="fas fa-bell"></i> إرسال إشعارات
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <script src="assets/js/components.js"></script>
+    <script src="assets/js/main.js"></script>
+    <script>
+        // Page-specific JavaScript
+        function approveOrder(orderId) {
+            if (confirm(`هل أنت متأكد من اعتماد الطلب ${orderId}؟`)) {
+                showLoading();
+                setTimeout(() => {
+                    hideLoading();
+                    showNotification(`تم اعتماد الطلب ${orderId} بنجاح`, 'success');
+                    // Update the status in the table
+                    updateOrderStatus(orderId, 'approved');
+                }, 1500);
+            }
+        }
+        
+        function rejectOrder(orderId) {
+            const reason = prompt('يرجى إدخال سبب الرفض:');
+            if (reason) {
+                showLoading();
+                setTimeout(() => {
+                    hideLoading();
+                    showNotification(`تم رفض الطلب ${orderId}`, 'success');
+                    updateOrderStatus(orderId, 'rejected');
+                }, 1500);
+            }
+        }
+        
+        function viewOrder(orderId) {
+            showNotification(`عرض تفاصيل الطلب ${orderId}`, 'info');
+        }
+        
+        function printOrder(orderId) {
+            showNotification(`طباعة الطلب ${orderId}`, 'info');
+        }
+        
+        function updateOrderStatus(orderId, newStatus) {
+            // This would update the table row status
+            console.log(`تحديث حالة الطلب ${orderId} إلى ${newStatus}`);
+        }
+        
+        function filterOrders() {
+            showLoading();
+            setTimeout(() => {
+                hideLoading();
+                showNotification('تم تطبيق المرشحات', 'success');
+            }, 1000);
+        }
+        
+        function approveAllPending() {
+            if (confirm('هل أنت متأكد من اعتماد جميع الطلبات المعلقة؟')) {
+                showLoading();
+                setTimeout(() => {
+                    hideLoading();
+                    showNotification('تم اعتماد جميع الطلبات المعلقة', 'success');
+                }, 2000);
+            }
+        }
+        
+        function exportOrders() {
+            exportData('excel');
+        }
+        
+        function sendNotifications() {
+            showLoading();
+            setTimeout(() => {
+                hideLoading();
+                showNotification('تم إرسال الإشعارات للعملاء', 'success');
+            }, 1500);
+        }
+    </script>
+    
+    <style>
+        .type-service {
+            background: #007bff;
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+        }
+        
+        .type-product {
+            background: #28a745;
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+        }
+        
+        .type-consultation {
+            background: #ffc107;
+            color: #333;
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+        }
+        
+        .status-pending {
+            color: #ffc107;
+            font-weight: 600;
+        }
+        
+        .status-approved {
+            color: #28a745;
+            font-weight: 600;
+        }
+        
+        .status-rejected {
+            color: #dc3545;
+            font-weight: 600;
+        }
+        
+        .status-in-review {
+            color: #007bff;
+            font-weight: 600;
+        }
+        
+        .priority-high {
+            color: #dc3545;
+            font-weight: 600;
+        }
+        
+        .priority-medium {
+            color: #ffc107;
+            font-weight: 600;
+        }
+        
+        .priority-low {
+            color: #28a745;
+            font-weight: 600;
+        }
+        
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #218838;
+        }
+        
+        .btn-icon {
+            background: none;
+            border: none;
+            padding: 0.5rem;
+            margin: 0 0.25rem;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--primary-gray);
+        }
+        
+        .btn-icon:hover {
+            background: var(--light-yellow);
+            color: var(--dark-gray);
+        }
+        
+        .btn-danger:hover {
+            background: #dc3545;
+            color: var(--white);
+        }
+    </style>
+</body>
+</html>
