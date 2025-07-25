@@ -2,6 +2,7 @@
 
 // Global variables
 let users = [];
+let filteredUsers = [];
 let currentPage = 1;
 const usersPerPage = 10;
 let currentRequestDetails = null;
@@ -10,14 +11,22 @@ let currentRequestDetails = null;
 document.addEventListener("DOMContentLoaded", function () {
   loadUsers();
   loadPendingRequests();
+  const filter = document.getElementById("serviceFilter");
+  if (filter) {
+    filter.addEventListener("change", applyFilter);
+  }
 });
 
 // Load users from API
 async function loadUsers() {
   try {
-    const data = await apiGet("/users");
-    users = data;
-    displayUsers();
+    const result = await fetchUsers();
+    if (result.status) {
+      users = result.users;
+    } else {
+      users = [];
+    }
+    applyFilter();
   } catch (error) {
     console.error("Error loading users:", error);
     // Use dummy data for development
@@ -53,7 +62,7 @@ async function loadUsers() {
         createdAt: "2024-01-25",
       },
     ];
-    displayUsers();
+    applyFilter();
   }
 }
 
@@ -67,43 +76,50 @@ async function loadPendingRequests() {
   }
 }
 
+function applyFilter() {
+  const filter = document.getElementById("serviceFilter");
+  const value = filter ? filter.value : "all";
+  if (value === "normal") {
+    filteredUsers = users.filter((u) => u.user_type === "normal");
+  } else if (value === "providers") {
+    filteredUsers = users.filter((u) => u.user_type !== "normal");
+  } else {
+    filteredUsers = users.slice();
+  }
+  displayUsers(filteredUsers);
+}
+
+function filterAccounts() {
+  applyFilter();
+}
+
 // Display users in table
-function displayUsers() {
-  const tbody = document.getElementById("usersTableBody");
+function displayUsers(dataArray = users) {
+  const tbody = document.getElementById("accountsTableBody");
   if (!tbody) return;
 
   tbody.innerHTML = "";
 
-  const startIndex = (currentPage - 1) * usersPerPage;
-  const endIndex = startIndex + usersPerPage;
-  const paginatedUsers = users.slice(startIndex, endIndex);
+  const paginatedUsers = dataArray.slice(0, usersPerPage);
 
   paginatedUsers.forEach((user) => {
     const row = document.createElement("tr");
+    const img = user.profile_image || user.logo_image || null;
+    const statusText = user.is_approved == 1 ? "معتمد" : "قيد المراجعة";
     row.innerHTML = `
             <td>
-                ${
-                  user.profileImage
-                    ? `<img src="${user.profileImage}" alt="${user.name}" class="profile-img">`
-                    : `<div class="profile-placeholder">${getInitials(user.name)}</div>`
-                }
+                ${img ? `<img src="${img}" class="profile-img" />` : `<div class="profile-placeholder">${getInitials(user.name)}</div>`}
             </td>
             <td>${user.name}</td>
             <td>${user.email}</td>
-            <td>${user.phone}</td>
-            <td><span class="badge badge-${getBadgeClass(user.userType)}">${getUserTypeText(user.userType)}</span></td>
-            <td><span class="status-${user.status}">${user.status === "active" ? "نشط" : "غير نشط"}</span></td>
-            <td>${formatDate(user.createdAt)}</td>
+            <td>${getUserTypeText(user.user_type)}</td>
+            <td>${statusText}</td>
+            <td>${formatDate(user.created_at)}</td>
+            <td>${user.last_login ? formatDate(user.last_login) : "-"}</td>
             <td>
-                <button class="btn btn-info btn-sm" onclick="viewUser(${user.id})">
-                    <i class="fas fa-eye"></i> عرض
-                </button>
-                <button class="btn btn-warning btn-sm" onclick="editUser(${user.id})">
-                    <i class="fas fa-edit"></i> تعديل
-                </button>
-                <button class="btn btn-danger btn-sm" onclick="deleteUser(${user.id})">
-                    <i class="fas fa-trash"></i> حذف
-                </button>
+                <button class="btn btn-info btn-sm" onclick="viewUser(${user.id})"><i class="fas fa-eye"></i> عرض التفاصيل</button>
+                ${user.is_approved == 0 ? `<button class="btn btn-success btn-sm" onclick="approveUser(${user.id})"><i class="fas fa-check"></i> قبول</button>` : ""}
+                <button class="btn btn-danger btn-sm" onclick="showDeleteUserModal(${user.id})"><i class="fas fa-trash"></i> حذف</button>
             </td>
         `;
     tbody.appendChild(row);
@@ -114,7 +130,7 @@ function displayUsers() {
 
 // Update pagination controls
 function updatePagination() {
-  const totalPages = Math.ceil(users.length / usersPerPage);
+  const totalPages = Math.ceil((filteredUsers.length || users.length) / usersPerPage);
   const prevBtn = document.getElementById("prevPage");
   const nextBtn = document.getElementById("nextPage");
   const pageInfo = document.getElementById("pageInfo");
@@ -128,16 +144,16 @@ function updatePagination() {
 function prevPage() {
   if (currentPage > 1) {
     currentPage--;
-    displayUsers();
+    displayUsers(filteredUsers);
   }
 }
 
 // Navigate to next page
 function nextPage() {
-  const totalPages = Math.ceil(users.length / usersPerPage);
+  const totalPages = Math.ceil((filteredUsers.length || users.length) / usersPerPage);
   if (currentPage < totalPages) {
     currentPage++;
-    displayUsers();
+    displayUsers(filteredUsers);
   }
 }
 
@@ -365,27 +381,41 @@ function viewUser(userId) {
     return;
   }
 
-  // Populate view modal with user data
-  document.getElementById("viewUserName").textContent = user.name;
-  document.getElementById("viewUserEmail").textContent = user.email;
-  document.getElementById("viewUserPhone").textContent = user.phone;
-  document.getElementById("viewUserType").textContent = getUserTypeText(
-    user.userType,
-  );
-  document.getElementById("viewUserStatus").textContent =
-    user.status === "active" ? "نشط" : "غير نشط";
-  document.getElementById("viewUserCreated").textContent = formatDate(
-    user.createdAt,
-  );
+  const body = document.getElementById("viewUserModalBody");
+  if (!body) return;
 
-  // Show profile image or initials
-  const profileContainer = document.getElementById("viewUserProfile");
-  if (user.profileImage) {
-    profileContainer.innerHTML = `<img src="${user.profileImage}" alt="${user.name}" class="profile-img">`;
-  } else {
-    profileContainer.innerHTML = `<div class="profile-placeholder">${getInitials(user.name)}</div>`;
+  let html = "<div class='user-details-grid'>";
+  html += createDetailRow("الاسم", user.name || "-");
+  html += createDetailRow("البريد الإلكتروني", user.email || "-");
+  html += createDetailRow("الجوال", user.phone || "-");
+  html += createDetailRow("نوع الحساب", getUserTypeText(user.user_type));
+  html += createDetailRow("المحافظة", user.governorate || "-");
+
+  switch (user.user_type) {
+    case "real_estate_office":
+      html += createDetailRow("اسم المكتب", user.office_name || "-");
+      html += createDetailRow("عنوان المكتب", user.office_address || "-");
+      break;
+    case "real_estate_individual":
+      html += createDetailRow("الاسم التجاري", user.agent_name || "-");
+      break;
+    case "restaurant":
+      html += createDetailRow("اسم المطعم", user.restaurant_name || "-");
+      if (user.cuisine_types) {
+        html += createDetailRow("أنواع المطبخ", user.cuisine_types.join(" , "));
+      }
+      break;
+    case "car_rental_office":
+      html += createDetailRow("اسم المكتب", user.office_name || "-");
+      break;
+    case "driver":
+      html += createDetailRow("نوع السيارة", user.car_type || "-");
+      html += createDetailRow("موديل السيارة", user.car_model || "-");
+      break;
   }
+  html += "</div>";
 
+  body.innerHTML = html;
   document.getElementById("viewUserModal").style.display = "block";
 }
 
@@ -408,8 +438,8 @@ function editUser(userId) {
   document.getElementById("editUserModal").style.display = "block";
 }
 
-// Delete user
-function deleteUser(userId) {
+// Show delete modal for user
+function showDeleteUserModal(userId) {
   const user = users.find((u) => u.id === userId);
   if (!user) {
     alert("المستخدم غير موجود");
@@ -428,13 +458,33 @@ async function confirmDeleteUser() {
   try {
     await deleteUserAPI(userId);
     users = users.filter((u) => u.id != userId);
-    displayUsers();
+    applyFilter();
     closeModal("deleteUserModal");
     alert("تم حذف المستخدم بنجاح");
   } catch (error) {
     console.error("Error deleting user:", error);
     alert("حدث خطأ في حذف المستخدم");
   }
+}
+
+async function approveUser(userId) {
+  if (!confirm("هل تريد قبول هذا الحساب؟")) return;
+  try {
+    await updateUserStatus(userId, 1);
+    const idx = users.findIndex((u) => u.id == userId);
+    if (idx !== -1) {
+      users[idx].is_approved = 1;
+    }
+    applyFilter();
+    alert("تم اعتماد الحساب بنجاح");
+  } catch (error) {
+    console.error("Error approving user:", error);
+    alert("حدث خطأ في اعتماد الحساب");
+  }
+}
+
+async function deleteUserAPI(userId) {
+  return deleteUser(userId);
 }
 
 // Save new user
@@ -450,7 +500,7 @@ async function saveUser() {
   try {
     const newUser = await addUser(formData);
     users.push(newUser);
-    displayUsers();
+    applyFilter();
     closeModal("addUserModal");
     document.getElementById("addUserForm").reset();
     alert("تم إضافة المستخدم بنجاح");
@@ -477,7 +527,7 @@ async function saveEditedUser() {
     if (userIndex !== -1) {
       users[userIndex] = { ...users[userIndex], ...formData };
     }
-    displayUsers();
+    applyFilter();
     closeModal("editUserModal");
     alert("تم تحديث المستخدم بنجاح");
   } catch (error) {
@@ -530,10 +580,15 @@ function getUserTypeText(userType) {
   const types = {
     admin: "مدير",
     user: "مستخدم",
+    normal: "مستخدم",
     moderator: "مشرف",
     driver: "سائق",
     vendor: "تاجر",
     company: "شركة",
+    restaurant: "مطعم",
+    car_rental_office: "مكتب تأجير",
+    real_estate_office: "مكتب عقاري",
+    real_estate_individual: "وسيط عقاري",
   };
   return types[userType] || userType;
 }
@@ -542,10 +597,15 @@ function getBadgeClass(userType) {
   const classes = {
     admin: "primary",
     user: "secondary",
+    normal: "secondary",
     moderator: "warning",
     driver: "success",
     vendor: "info",
     company: "primary",
+    restaurant: "info",
+    car_rental_office: "success",
+    real_estate_office: "primary",
+    real_estate_individual: "primary",
   };
   return classes[userType] || "secondary";
 }

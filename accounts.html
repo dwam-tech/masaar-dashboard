@@ -49,7 +49,7 @@
           <div
             style="
               display: grid;
-              grid-template-columns: 1fr 1fr 1fr auto;
+              grid-template-columns: 1fr 1fr 1fr 1fr auto;
               gap: 1rem;
               align-items: end;
             "
@@ -83,6 +83,14 @@
                 <option value="0">غير معتمد</option>
                 <option value="pending">معلق</option>
                 <option value="rejected">مرفوض</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>الفلتر</label>
+              <select class="form-control" id="serviceFilter">
+                <option value="all">الكل</option>
+                <option value="normal">المستخدمين العاديين</option>
+                <option value="providers">مقدمو الخدمة</option>
               </select>
             </div>
             <button class="btn btn-primary" onclick="filterAccounts()">
